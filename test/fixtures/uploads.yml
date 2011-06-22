@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  user_id: 1
+  state: MyString
+  filename: MyString
+  cart: 1
+  current_job_id: 1
+  title: MyString
+  artist: MyString
+  log: MyText
+
+two:
+  user_id: 1
+  state: MyString
+  filename: MyString
+  cart: 1
+  current_job_id: 1
+  title: MyString
+  artist: MyString
+  log: MyText

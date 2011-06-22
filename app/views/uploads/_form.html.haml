@@ -1,0 +1,6 @@
+= form_tag '/uploads/send_file', :multipart => true, :method => :post, :id => 'upload' do 
+  .field
+    = label_tag :filename
+    = file_field_tag :filename
+  .field
+    = submit_tag 'Upload'

@@ -1,0 +1,64 @@
+%h1="Upload Details: #{@upload.filename} - ID ##{@upload.id}"
+%p
+  %strong User:
+  = @upload.user.email
+%p
+  %strong Current state:
+  = state(@upload.state)
+%p
+  %strong Original filename:
+  = @upload.filename
+%p
+  %strong Cart Number:
+  = @upload.cart or "Not imported to playout system yet"
+%p
+  %strong Current Job Status:
+  - if @upload.current_job_id 
+    = dj_status(@upload.current_job_id)
+  - else 
+    No job running
+%p
+  %em Title and artist metadata is only available for uploads with appropriate metadata
+%p
+  %strong Title:
+  = @upload.title or "No title metadata available"
+%p
+  %strong Artist:
+  = @upload.artist or "No artist metadata available"
+%p
+  %strong Album:
+  = @upload.album or "No album metadata available"
+%p
+  %strong Genres:
+  = @upload.genre or "No genre metadata available"
+%p
+  %strong Bitrate/Format/Length:
+  = (@upload.bitrate ? @upload.bitrate.to_s+"kbps" : nil) or "No bitrate metadata available"
+  \- 
+  = @upload.format or ""
+  \- 
+  = (@upload.length ? (@upload.length/1000).to_s+"s" : nil) or ""
+%p
+  %strong Record Label:
+  = @upload.publisher or "No publisher metadata available"
+%p
+  %strong Copyright:
+  = @upload.copyright or "No copyright metadata available"
+%p
+  %strong ISRC:
+  = @upload.isrc or "No International Standard Recording Code available"
+%p
+  %strong Composer:
+  = @upload.composer or "No composer metadata available"
+
+%h2 Processing Log
+%p
+  %em The processing log contains raw output of programs and jobs used to process the upload for diagnostic and debugging purposes.
+%pre= @upload.log
+- job = Delayed::Job.find(@upload.current_job_id) rescue nil
+- if job and job.last_error
+
+  %h2 Failure Traceback
+  %pre= job.last_error.gsub('\n',"\n")
+
+%p= link_to 'Back', uploads_path

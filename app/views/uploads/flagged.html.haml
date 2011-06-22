@@ -1,0 +1,31 @@
+%h1 Uploads Pending Review
+%p
+  Uploads listed here are those uploads that have been filtered out for various reasons.
+%p= link_to 'New Upload', new_upload_path
+
+- if @uploads and @uploads.size > 0
+  %table
+    %tr
+      %th Cart
+      %th State
+      %th Bitrate/Format
+      %th Title/Artist/Filename
+      %th
+      %th{:colspan=>2} Approval
+
+    - @uploads.each do |upload|
+      %tr
+        %td= upload.cart or "Unknown"
+        %td= state(upload.state)
+        %td= upload.bitrate.to_s+"kbps/"+upload.format rescue "N/A"
+        %td
+          - if upload.title and upload.artist
+            =upload.title+" - "+upload.artist
+          - else
+            =upload.filename
+        %td= link_to 'More Details', upload
+        %td= link_to 'Approve', approve_upload_path(upload)
+        %td= link_to 'Reject', reject_upload_path(upload)
+- else
+  %p You have not uploaded any content yet.
+
