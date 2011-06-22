@@ -1,0 +1,73 @@
+h1. Welcome to IRIS
+
+IRIS is Insanity Radio's Ingest System. It's not a brilliant name, but what the heck.
+
+It has one purpose, and one purpose only: Act as a firewall between presenters, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system.
+
+It is in active development and has not yet become a working system insofar as some pieces still need writing and finishing.
+
+
+h2. Introduction
+
+IRIS is a Ruby on Rails web application, for ease of use for both presenters and systems administrators. Ruby is a cinch to learn if you've not used it before, and trivial to read.
+
+The system is designed to be easy to adapt and modify for various scenarios and needs. It features flexible authentication (via the cancan plugin and Devise), 
+a light set of dependencies on external programs to do audio and metadata processing, and a state machine based process for handling incoming uploads.
+
+It features quality (bitrate/samplerate) filtering and in future may support explicit lyric filtering. Filtered uploads can be reviewed and either accepted or rejected by an administrator.
+
+Audio being introduced to the system is archived to FLAC prior to processing, preserving an original copy of the file in case normalization needs to be reversed. Originals of uploads are also kept for debugging failed uploads etc.
+
+Once audio is unpacked to WAV (via ffmpeg, so incoming files can be pretty much anything), it is normalized with an aim to not -comply- per-se but at least motion towards the EBU R128 standard for loudness levelling.
+
+Gains are adjusted to bring R128 loudness into line with -23 LUFS, and loudness range can be adjusted (compression of dynamic range) in situ, reducing the amount of post-playout processing required to achieve consistent levels.
+
+All jobs and processing can be distributed across multiple machines with shared storage using a simple database based queue system that also ensures first-in-first-out processing priority, failure logging and retries, and per-upload logging.
+
+
+h2. Dependencies and Installation
+
+IRIS requires:
+
+* Ruby (1.9.2 recommended; I usually do a from-source install from ruby-lang.org, saves headaches) and development headers (not needed if you did it from source)
+* The bundler gem (sudo gem install bundler)
+* sox, ecasound, ffmpeg and exiftool (all available in Ubuntu's repos, other distros may vary)
+* r128-scanner from libebur128 (https://github.com/jiixyj/libebur128)
+* nginx with the nginx upload module (http://www.grid.net.ru/nginx/upload.en.html)
+* A database server (PostgreSQL highly recommended)
+* libxml-dev, libxslt-dev, graphviz-dev, ffmpeg-dev libraries
+
+... and that's it.
+
+Once you've installed the prerequisites, just git clone the repo to somewhere, cd in, and run <code>bundle install</code> to get the required gems. Once that's done, copy config/database.yml.example to config/database.yml, configure it.
+Then you just <code>rake db:migrate</code> to set up the DB, <code>rails server thin</code> to start the application server (run that in a screen), fire up nginx with the config in doc/nginx.conf.example (or roll your own based on that),
+and grab another screen and run <code>rake jobs:work</code>. Bam. Now you can open localhost:81 in a browser, and upload stuff and see everything just work. In theory.
+
+If you've worked with Rails before: It's a bog-standard Rails 3 app with some audio cleverness added in via external programs and a nginx upload module requirement. Flavour to taste.
+
+Deployment can be automated with capistrano if you've got a few boxes you want to run it across to share the load (r128-scanner and ecasound can use a -lot- of CPU, as can FLAC encoding and so on...)
+
+
+h2. History
+
+IRIS is the successor to MACIS, a similar system originally developed to interface with the Myriad playout system at Insanity Radio 1287AM (http://insanityradio.com). MACIS was slapped together in a couple of days and didn't work very well.
+
+IRIS was slapped together in about a week and works way, way better.
+
+It was not developed originally for general consumption but my aim is to develop the system such that it can be picked up and used in any similar situation. 
+
+Insanity is a student/community radio station near London in the UK, and while we do aim for perfection and professionalism, we are students. Forgive any indiscretions. Pull requests are welcomed heartily.
+
+
+h2. Credits
+
+IRIS wouldn't work without a whole boatload of Linux audio tools, so a huge collective thank-you to the Linux audio development community.
+
+And a massive thank you to Insanity Radio's management for not getting too upset about the small cluster of Linux boxes turning their meeting room into a very loud server room.
+
+IRIS was written by James Harrison (http://talkunafraid.co.uk), Insanity's Head of Technology from 2010 till 2012.
+
+
+h2. License
+
+IRIS is licensed under the GNU GPL v3 or greater, except where otherwise noted (external libs and such).
