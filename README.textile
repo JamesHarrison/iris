@@ -11,8 +11,7 @@ h2. Introduction
 
 IRIS is a Ruby on Rails web application, for ease of use for both presenters and systems administrators. Ruby is a cinch to learn if you've not used it before, and trivial to read.
 
-The system is designed to be easy to adapt and modify for various scenarios and needs. It features flexible authentication (via the cancan plugin and Devise), 
-a light set of dependencies on external programs to do audio and metadata processing, and a state machine based process for handling incoming uploads.
+The system is designed to be easy to adapt and modify for various scenarios and needs. It features flexible authentication (via the cancan plugin and Devise), a light set of dependencies on external programs to do audio and metadata processing, and a state machine based process for handling incoming uploads.
 
 It features quality (bitrate/samplerate) filtering and in future may support explicit lyric filtering. Filtered uploads can be reviewed and either accepted or rejected by an administrator.
 
@@ -40,8 +39,8 @@ IRIS requires:
 ... and that's it.
 
 Once you've installed the prerequisites, just git clone the repo to somewhere, cd in, and run <code>bundle install</code> to get the required gems. Once that's done, copy config/database.yml.example to config/database.yml, configure it.
-Then you just <code>rake db:migrate</code> to set up the DB, <code>rails server thin</code> to start the application server (run that in a screen), fire up nginx with the config in doc/nginx.conf.example (or roll your own based on that),
-and grab another screen and run <code>rake jobs:work</code>. Bam. Now you can open localhost:81 in a browser, and upload stuff and see everything just work. In theory.
+
+Then you just <code>rake db:migrate</code> to set up the DB, <code>rails server thin</code> to start the application server (run that in a screen), fire up nginx with the config in doc/nginx.conf.example (or roll your own based on that), and grab another screen and run <code>rake jobs:work</code>. Bam. Now you can open localhost:81 in a browser, and upload stuff and see everything just work. In theory.
 
 If you've worked with Rails before: It's a bog-standard Rails 3 app with some audio cleverness added in via external programs and a nginx upload module requirement. Flavour to taste.
 
