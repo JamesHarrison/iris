@@ -1,0 +1,15 @@
+%h1
+  Editing user
+  = @user.name
+- form_for [:admin, @user] do |f| 
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :email
+    = f.text_field :email
+  .field
+    = f.label :role
+    = f.select :role, [['Board','board'], ['Music Team', 'music_team'], ['Presenter/Regular User', 'user']]
+  .field
+    = f.submit 'Save'

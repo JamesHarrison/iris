@@ -1,3 +1,7 @@
+# COSMETIC SETTINGS
+site_title: "Interchangeable Radio Ingest System"
+footer_text: "My Radio Station"
+# INTERNAL PATHS
 # Path where you've got nginx's upload module dumping stuff - needs write access
 path_to_uploads: /tmp
 # Path to wherever you want FLACs of the uploads archived pre-normalization
@@ -6,13 +10,28 @@ path_to_archive: /tmp/archive
 path_to_orig_backup: /tmp/orig
 # Path to wherever you want the final files exporting to. Playout systems importing from IRIS need access to at least this.
 path_to_import: /tmp/import
+# NORMALIZATION
 # Target LRA to use in normalization. LRA is the loudness range factor, as defined by the EBU in technote 3342
 # http://tech.ebu.ch/webdav/site/tech/shared/tech/tech3342.pdf
 # It's basically how much dynamic range you want to allow in your normalized files. 8 means 16dB/LU of total dynamic range (+-8 from -23LUFS)
 # Value of 999 will effectively turn off LRA compression in normalization.
 target_lra: 8.0
+# FILTERING
 # These values specify limits in filtering, bitrate in kbps, sample rate in Hz
 minimum_bitrate: 128
 minimum_sample_rate: 44100
 # If you have a _FULL LYRICS_ API key for MusixMatch, enter it here
 musixmatch_api_key: nil
+# IMPORT MODULES
+# - RIVENDELL
+rivendell_import_enabled: false
+# Segue marker threshold in dBFS
+rivendell_import_segue_level: -60
+# Segue length in milliseconds
+rivendell_import_segue_length: 2000
+# - MYRIAD 3.5
+myriad_import_enabled: false
+# Comma-seperated list of hosts running Myriad with the TCP/IP remote port enabled
+myriad_import_hosts: nil
+# Path on the Myriad boxes to the path_to_import Samba/NFS share
+myriad_import_path: "\\iris_machine\import"

@@ -28,7 +28,6 @@ GEM
       activemodel (= 3.0.9)
       activesupport (= 3.0.9)
     activesupport (3.0.9)
-    ai4r (1.9)
     arel (2.0.10)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
@@ -149,7 +148,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  ai4r
   cancan
   capistrano
   delayed_job

@@ -1,0 +1,13 @@
+%h1 User Management
+%table
+  %tr
+    %th Name
+    %th Email
+    %th Role
+    %th &nbsp;
+  - @users.each do |u| 
+    %tr
+      %td=u.name
+      %td=u.email
+      %td=u.role.capitalize
+      %td=link_to 'Edit', edit_admin_user_path(u)

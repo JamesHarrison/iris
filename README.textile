@@ -1,15 +1,15 @@
 h1. Welcome to IRIS
 
-IRIS is Insanity Radio's Ingest System. It's not a brilliant name, but what the heck.
+IRIS is the Interchangeable Radio Ingest System. It's not a brilliant name, but what the heck.
 
-It has one purpose, and one purpose only: Act as a firewall between presenters, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system.
+It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system.
 
-It is in active development and has not yet become a working system insofar as some pieces still need writing and finishing.
+The goal is to make adhesion to guidelines for technical quality in radio systems easier, and to automate as much of the ingest process as is possible in most workflows.
 
 
 h2. Introduction
 
-IRIS is a Ruby on Rails web application, for ease of use for both presenters and systems administrators. Ruby is a cinch to learn if you've not used it before, and trivial to read.
+IRIS is a Ruby on Rails web application, for ease of use for both presenters and systems administrators. Ruby is a cinch to learn if you've not used it before, and trivial to read- so even if you don't know how to extend or adapt it, you can at least work out what it's doing by having a look under the hood.
 
 The system is designed to be easy to adapt and modify for various scenarios and needs. It features flexible authentication (via the cancan plugin and Devise), a light set of dependencies on external programs to do audio and metadata processing, and a state machine based process for handling incoming uploads.
 

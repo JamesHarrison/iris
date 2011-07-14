@@ -11,16 +11,18 @@
 %body
   #container
     #header
-      =image_tag 'iris.png'
       =link_to 'IRIS', '/'
-      Insanity Radio's Ingest System
+      = Settings.site_title
     #nav
       %ul
         %li=link_to 'Home', '/'
+        %li=link_to 'Help', '/welcome/help'
         - if current_user
           %li=link_to 'Uploads', '/uploads'
           - if can? :manage, Upload
             %li=link_to 'Flagged Uploads', '/uploads/flagged'
+          - if can? :manage, User
+            %li=link_to 'User Management', '/admin/users/'
           - if can? :upload, Upload
             %li=link_to 'New Upload', '/uploads/new'
           %li="Logged in as #{current_user.name}"
@@ -33,4 +35,7 @@
     - if flash[:alert]
       #error=flash[:alert]
     #content=yield
-    #footer Insanity Radio Ingest System (IRIS) DEVELOPMENT BUILD 1.0 - James Harrison - Insanity Radio
+    #footer
+      = Settings.footer_text
+      &#149; Powered by
+      = link_to 'IRIS', 'https://github.com/JamesHarrison/iris'

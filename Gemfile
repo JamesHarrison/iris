@@ -28,8 +28,6 @@ gem 'lazy_high_charts'
 gem 'ffmpeg-ruby'
 gem 'musicbrainz-ruby', :require=>'musicbrainz'
 gem 'musicbrainz_automatcher'
-# Artificial intelligence
-gem 'ai4r'
 
 #gem 'rbrainz'
 # Use unicorn as the web server

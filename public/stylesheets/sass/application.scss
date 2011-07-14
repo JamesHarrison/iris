@@ -10,11 +10,22 @@ body {
   margin:auto;
   width:980px;
 }
+a, a:active, a:visited {
+  text-decoration: none;
+  color: #6b5b00; }
+
+a:hover {
+  text-decoration: none;
+  color: #a08800; }
+
 #header {
+  text-rendering: optimizeLegibility;
+  text-shadow: 0px 0px 1px #CCC;
   width:100%;
   font-size: 16px;
   height:50px;
   a {
+    text-shadow: 0px 0px 2px #000;
     font-family: times, Times New Roman, times-roman, georgia, serif;
     font-size: 64px;
     line-height: 40px;

@@ -14,6 +14,17 @@
       = link_to 'Approve', approve_upload_path(@upload)
       \-
       = link_to 'Reject', reject_upload_path(@upload)
+- elsif @upload.log.include?("ERROR - ") and not @upload.state == 'needs_review'
+  %div{:class=>'adminbox'}
+    %h2 Problem encounted while uploading
+    %p
+      You should inform an administrator so they can investigate the problem.
+    %p
+      The following log lines are flagged as errors.
+    %pre
+      - @upload.log.split("\n").each do |l|
+        - if l.include?("ERROR - ")
+          = l
 %p
   %strong User:
   = @upload.user.email
@@ -67,10 +78,10 @@
   = @upload.isrc or "No International Standard Recording Code available"
 %p
   %strong MusicBrainz Artist ID:
-  %pre= @upload.musicbrainz_artist_id or "Artist was not found on MusicBrainz (or metadata job has not run yet)"
+  = @upload.musicbrainz_artist_id or "Artist was not found on MusicBrainz (or metadata job has not run yet)"
 %p
   %strong MusicBrainz Track ID:
-  %pre= @upload.musicbrainz_track_id or "Track was not found on MusicBrainz (or metadata job has not run yet)"
+  = @upload.musicbrainz_track_id or "Track was not found on MusicBrainz (or metadata job has not run yet)"
 %h2 Processing Log
 %p
   %em The processing log contains raw output of programs and jobs used to process the upload for diagnostic and debugging purposes.

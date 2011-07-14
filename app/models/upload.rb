@@ -23,13 +23,7 @@ class Upload < ActiveRecord::Base
     after_transition :uploaded => :metadata_extracted do |u,t|u.enqueue_and_log(FilterJob, 15) end
     after_transition [:metadata_extracted, :needs_review] => :filtered do |u,t|u.enqueue_and_log(ExtractFileJob, 20) end
     after_transition :filtered => :unpacked do |u,t|u.enqueue_and_log(ArchiveJob, 25);u.enqueue_and_log(NormalizeJob, 30) end
-    #after_transition :metadata_extracted => :needs_review do |u,t|u.enqueue_and_log(FilterJob, 15) end
-    #after_transition :needs_review => :rejected do |u,t|u.enqueue_and_log(FilterJob, 15) end
-    #after_transition :filtered => :normalized do |u,t|u.enqueue_and_log(FilterJob, 15) end
-    #after_transition :metadata_extracted => :failed do |u,t|u.enqueue_and_log(FilterJob, 15) end
-    #after_transition :filtered => :failed do |u,t|u.enqueue_and_log(FilterJob, 15) end
-    #after_transition :metadata_extracted => :duplicate do |u,t|u.enqueue_and_log(FilterJob, 15) end
-
+    after_transition :filtered => :normalized do |u,t|u.enqueue_and_log(ImportJob, 35) end
     event :got_metadata do
       transition :uploaded => :metadata_extracted
       # Queue filter job

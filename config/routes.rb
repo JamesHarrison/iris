@@ -1,4 +1,7 @@
 Iris::Application.routes.draw do
+  namespace :admin do
+    resources :users
+  end
   resources :uploads do
     collection do
       post 'send_file'
