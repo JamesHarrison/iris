@@ -14,7 +14,7 @@
       = link_to 'Approve', approve_upload_path(@upload)
       \-
       = link_to 'Reject', reject_upload_path(@upload)
-- elsif @upload.log.include?("ERROR - ") and not @upload.state == 'needs_review'
+- elsif @upload.log.include?("ERROR - ") and not @upload.state == 'needs_review' and not @upload.state == 'rejected'
   %div{:class=>'adminbox'}
     %h2 Problem encounted while uploading
     %p
@@ -25,6 +25,11 @@
       - @upload.log.split("\n").each do |l|
         - if l.include?("ERROR - ")
           = l
+- if @upload.state == 'rejected'
+  %div{:class=>'adminbox'}
+    %h2 Upload was rejected
+    %p
+      An administrator decided that the content uploaded was not suitable for ingest and was thus rejected.
 %p
   %strong User:
   = @upload.user.email
@@ -82,18 +87,6 @@
 %p
   %strong MusicBrainz Track ID:
   = @upload.musicbrainz_track_id or "Track was not found on MusicBrainz (or metadata job has not run yet)"
-%h2 Processing Log
-%p
-  %em The processing log contains raw output of programs and jobs used to process the upload for diagnostic and debugging purposes.
-%pre= @upload.log
-- job = Delayed::Job.find(@upload.current_job_id) rescue nil
-- if job and job.last_error
-  %h2 Failure Traceback
-  %pre= job.last_error.gsub('\n',"\n")
-%h2 Lyrics
-%p
-  %em If the track could be found on both MusicBrainz and MusixMatch, lyrics will be available here.
-%pre= @upload.lyrics or "No lyrics available"
 
 %h2 Loudness Waveforms
 - if @h
@@ -103,4 +96,17 @@
 - else
   %p
     %em A loudness waveform has not yet been produced for this track. This graph is generated during normalization.
+%h2 Processing Log
+%p
+  %em The processing log contains raw output of programs and jobs used to process the upload for diagnostic and debugging purposes.
+%pre.log=render :partial=>'log', :locals=>{:log=>@upload.log}
+- job = Delayed::Job.find(@upload.current_job_id) rescue nil
+- if job and job.last_error
+  %h2 Failure Traceback
+  %pre= job.last_error.gsub('\n',"\n")
+%h2 Lyrics
+- if !@upload.lyrics
+  %p
+    %em If the track could be found on both MusicBrainz and MusixMatch, lyrics will be available here.
+%pre= @upload.lyrics or "No lyrics available"
 %p= link_to 'Back', uploads_path

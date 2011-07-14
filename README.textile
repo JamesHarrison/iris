@@ -2,9 +2,9 @@ h1. Welcome to IRIS
 
 IRIS is the Interchangeable Radio Ingest System. It's not a brilliant name, but what the heck.
 
-It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system.
+It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system. Of course, this playout system could be anything- the current targets for automatic import to playout systems are the Rivendell broadcast atuomation sysetm and the Myriad 3.5 system from P Squared, but you can manually import the resultant files into anything.
 
-The goal is to make adhesion to guidelines for technical quality in radio systems easier, and to automate as much of the ingest process as is possible in most workflows.
+The goal is to make adhesion to guidelines for technical quality in radio and other broadcast systems easier, and to automate as much of the ingest process as is possible in most workflows.
 
 
 h2. Introduction
@@ -25,7 +25,7 @@ Gains are adjusted to bring R128 loudness into line with -23 LUFS, and loudness 
 
 All jobs and processing can be distributed across multiple machines with shared storage using a simple database based queue system that also ensures first-in-first-out processing priority, failure logging and retries, and per-upload logging.
 
-An EBU R128 momentary loudness waveform is generated and stored in the DB; currently, this isn't used anywhere, but might get used for displaying a loudness waveform for each upload in due course.
+An EBU R128 0.4s momentary loudness waveform is generated and stored in the DB before, after compression (if a compressor is used) and after the entire normalization step, allowing quick and easy review of track loudness and normalization effects.
 
 
 h2. Dependencies and Installation
@@ -56,21 +56,13 @@ h2. History
 
 IRIS is the successor to MACIS, a similar system originally developed to interface with the Myriad playout system at Insanity Radio 1287AM (http://insanityradio.com). MACIS was slapped together in a couple of days and didn't work very well.
 
-IRIS was slapped together in about a week and works way, way better.
-
-It was not developed originally for general consumption but my aim is to develop the system such that it can be picked up and used in any similar situation. 
-
-Insanity is a student/community radio station near London in the UK, and while we do aim for perfection and professionalism, we are students. Forgive any indiscretions. Pull requests are welcomed heartily.
-
+IRIS was originally slapped together in about a week and works way, way better than MACIS ever did. MACIS was also site-specific; IRIS was developed to be taken to other stations where appropriate, and to be a more generally usable system.
 
 h2. Credits
 
 IRIS wouldn't work without a whole boatload of Linux audio tools, so a huge collective thank-you to the Linux audio development community.
 
-And a massive thank you to Insanity Radio's management for not getting too upset about the small cluster of Linux boxes turning their meeting room into a very loud server room.
-
 IRIS was written by James Harrison (http://talkunafraid.co.uk), Insanity's Head of Technology from 2010 till 2012.
-
 
 h2. License
 

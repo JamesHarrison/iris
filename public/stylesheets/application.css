@@ -6,6 +6,10 @@ body {
   line-height: 150%;
   padding: 0px; }
 
+h1, h2, h3, h4, h5 {
+  text-rendering: optimizeLegibility;
+  text-shadow: 0px 0px 1px #CCC; }
+
 #container {
   margin: auto;
   width: 980px; }
@@ -74,6 +78,19 @@ a:hover {
   margin-top: 25px;
   border-top: 1px solid #CCCCCC; }
 
+.log span {
+  padding: 1px;
+  padding-bottom: 2px;
+  margin: 0px; }
+.log .log_inf {
+  background: #CCFFDD; }
+.log .log_wrn {
+  background: #FFFFCC;
+  font-weight: bold; }
+.log .log_err {
+  background: #FFCCCC;
+  font-weight: bold; }
+
 .field {
   width: 600px; }
 
@@ -106,6 +123,9 @@ pre {
   padding: 4px; }
 
 .adminbox {
-  padding: 25px;
-  background: #CCCCCC;
-  border: #FF0000 1px solid; }
+  padding: 15px;
+  background: #FFDDDD;
+  border: #FF0000 4px solid; }
+  .adminbox h2 {
+    text-rendering: optimizeLegibility;
+    text-shadow: 0px 0px 1px #CCC; }

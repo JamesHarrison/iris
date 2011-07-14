@@ -1,0 +1,9 @@
+<% log.split("\n").each do |l| %>
+<% if l.include?("INFO - ") %>
+<span class="log_inf"><%= l %></span>
+<% elsif l.include?("ERROR - ") %>
+<span class="log_err"><%= l %></span>
+<% elsif l.include?("WARN - ") %>
+<span class="log_wrn"><%= l %></span>
+<% end %>
+<% end %>

@@ -22,9 +22,9 @@
         %td= state(upload.state)
         %td
           - if upload.title and upload.artist
-            =upload.title+" - "+upload.artist
+            =link_to (upload.title+" - "+upload.artist), upload
           - else
-            =upload.filename
+            =link_to upload.filename, upload
         %td= link_to 'More Details', upload
 - else
   %p You have not uploaded any content yet.

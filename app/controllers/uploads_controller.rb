@@ -72,12 +72,14 @@ class UploadsController < ApplicationController
     authorize! :manage, Upload
     @upload = Upload.accessible_by(current_ability).find(params[:id])
     @upload.approve
+    @upload.atl("WARN", "WebInterface: Upload manually approved by #{current_user.name}/#{current_user.id}/#{current_user.email}")
     redirect_to upload_path(@upload)
   end
   def reject
     authorize! :manage, Upload
     @upload = Upload.accessible_by(current_ability).find(params[:id])
     @upload.reject
+    @upload.atl("ERROR", "WebInterface: Upload rejected by #{current_user.name}/#{current_user.id}/#{current_user.email}")
     redirect_to upload_path(@upload)
   end
   def flagged

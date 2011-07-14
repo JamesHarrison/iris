@@ -20,9 +20,9 @@
         %td= upload.bitrate.to_s+"kbps/"+upload.format rescue "N/A"
         %td
           - if upload.title and upload.artist
-            =upload.title+" - "+upload.artist
+            =link_to (upload.title+" - "+upload.artist), upload
           - else
-            =upload.filename
+            =link_to upload.filename, upload
         %td= link_to 'More Details', upload
         %td= link_to 'Approve', approve_upload_path(upload)
         %td= link_to 'Reject', reject_upload_path(upload)
