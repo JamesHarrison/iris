@@ -7,7 +7,7 @@ gem 'rails', '3.0.9'
 
 gem 'pg'
 
-gem 'yajl-ruby'
+gem 'yajl-ruby', :require=>'yajl'
 
 gem 'devise'
 gem 'hpricot'
@@ -21,11 +21,15 @@ gem 'ruby-graphviz', :require => 'graphviz'
 gem 'cancan'
 gem 'delayed_job'
 gem 'rails_config'
+# pretties
+gem 'lazy_high_charts'
 # Metadata libs
 #gem 'ruby-audioinfo', :require => 'audioinfo'
 gem 'ffmpeg-ruby'
 gem 'musicbrainz-ruby', :require=>'musicbrainz'
 gem 'musicbrainz_automatcher'
+# Artificial intelligence
+gem 'ai4r'
 
 #gem 'rbrainz'
 # Use unicorn as the web server

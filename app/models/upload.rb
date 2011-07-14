@@ -1,7 +1,7 @@
 class Upload < ActiveRecord::Base
   attr_accessible :filename, :cart_number, :current_job_id, :title, :artist, :album, :year, :copyright, :composer, :publisher, :isrc, :genre, :bitrate, :log
   belongs_to :user
-  has_one :upload_waveform
+  has_many :upload_waveforms
   def atl(level, message)
     self.transaction do
       self.log = "" unless self.log
@@ -75,10 +75,12 @@ class Upload < ActiveRecord::Base
     end
     event :reject do
       transition :needs_review => :rejected
+      transition :needs_approval => :rejected
       # Email head of music
     end
     event :approve do
       transition :needs_review => :filtered
+      transition :needs_approval => :imported
       # Queue normalize job
     end
     state :uploaded do
@@ -98,6 +100,9 @@ class Upload < ActiveRecord::Base
     end
     state :normalized do
       # We've now successfully normalized this and done loudness control
+    end
+    state :needs_approval do
+      # We're waiting for approval before import
     end
     state :failed do
       # Something went wrong at some stage.

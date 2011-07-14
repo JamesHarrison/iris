@@ -13,15 +13,19 @@ IRIS is a Ruby on Rails web application, for ease of use for both presenters and
 
 The system is designed to be easy to adapt and modify for various scenarios and needs. It features flexible authentication (via the cancan plugin and Devise), a light set of dependencies on external programs to do audio and metadata processing, and a state machine based process for handling incoming uploads.
 
-It features quality (bitrate/samplerate) filtering and in future may support explicit lyric filtering. Filtered uploads can be reviewed and either accepted or rejected by an administrator.
+Audio first uploaded is scanned for technical (bitrate, samplerate, format, etc) metadata and non-technical (artist, title, album, copyright, composer etc) metadata. This is then correlated with the MusicBrainz DB where possible to fill in the blanks (ISRCs particularly). Audio is then unpacked to WAV for processing.
 
-Audio being introduced to the system is archived to FLAC prior to processing, preserving an original copy of the file in case normalization needs to be reversed. Originals of uploads are also kept for debugging failed uploads etc.
+It features quality (bitrate/samplerate) filtering and supports filtering of explicit lyrics through the MusixMatch service (commercial in some cases, but reasonably cheap and free for non-commercial uses). Filtered uploads can be reviewed and either accepted or rejected by an administrator.
 
-Once audio is unpacked to WAV (via ffmpeg, so incoming files can be pretty much anything), it is normalized with an aim to not -comply- per-se but at least motion towards the EBU R128 standard for loudness levelling.
+Audio being introduced to the system is archived to FLAC prior to processing, preserving an original copy of the file in case normalization needs to be reversed. Originals of uploads are also kept for debugging failed uploads etc, with the idea being that you nuke the originals every few days and keep the FLACs to hand in a consistent format.
+
+Once audio is unpacked to WAV (via ffmpeg, so incoming files can be pretty much anything), it is normalized with an aim to not comply per-se but at least motion towards the EBU R128 standard for loudness levelling.
 
 Gains are adjusted to bring R128 loudness into line with -23 LUFS, and loudness range can be adjusted (compression of dynamic range) in situ, reducing the amount of post-playout processing required to achieve consistent levels.
 
 All jobs and processing can be distributed across multiple machines with shared storage using a simple database based queue system that also ensures first-in-first-out processing priority, failure logging and retries, and per-upload logging.
+
+An EBU R128 momentary loudness waveform is generated and stored in the DB; currently, this isn't used anywhere, but might get used for displaying a loudness waveform for each upload in due course.
 
 
 h2. Dependencies and Installation
@@ -31,12 +35,13 @@ IRIS requires:
 * Ruby (1.9.2 recommended; I usually do a from-source install from ruby-lang.org, saves headaches) and development headers (not needed if you did it from source)
 * The bundler gem (sudo gem install bundler)
 * sox, ecasound, ffmpeg and exiftool (all available in Ubuntu's repos, other distros may vary)
+* The SC4 LADSPA compressor (available in swh-plugins in Ubuntu)
 * r128-scanner from libebur128 (https://github.com/jiixyj/libebur128)
 * nginx with the nginx upload module (http://www.grid.net.ru/nginx/upload.en.html)
 * A database server (PostgreSQL highly recommended)
 * libxml-dev, libxslt-dev, graphviz-dev, ffmpeg-dev libraries
 
-... and that's it.
+... and that's it. (Yeah, there's a fair bit there.)
 
 Once you've installed the prerequisites, just git clone the repo to somewhere, cd in, and run <code>bundle install</code> to get the required gems. Once that's done, copy config/database.yml.example to config/database.yml, configure it.
 
@@ -44,7 +49,7 @@ Then you just <code>rake db:migrate</code> to set up the DB, <code>rails server 
 
 If you've worked with Rails before: It's a bog-standard Rails 3 app with some audio cleverness added in via external programs and a nginx upload module requirement. Flavour to taste.
 
-Deployment can be automated with capistrano if you've got a few boxes you want to run it across to share the load (r128-scanner and ecasound can use a -lot- of CPU, as can FLAC encoding and so on...)
+Deployment can be automated with capistrano if you've got a few boxes you want to run it across to share the load (r128-scanner and ecasound can use a lot of CPU, as can FLAC encoding and so on...)
 
 
 h2. History

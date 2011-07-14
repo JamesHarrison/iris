@@ -53,7 +53,6 @@ class MetadataJob < Struct.new(:upload_id)
         brainz = MusicBrainz::Client.new()
         mbam = MusicbrainzAutomatcher.new({:musicbrainz_host => 'musicbrainz.org', :network_timeout => 1, :network_retries => 2})
         a_id = mbam.match_artist(u.artist, u.title)
-        
         # If this is actually a multi-artist collaboration we should split this with a regexp.
         mb_artist = nil
         mar = Regexp.new(/(.+) (&|feat.?|and|ft.?|vs.?|featuring|\+)\s(.*)/i)
@@ -78,6 +77,7 @@ class MetadataJob < Struct.new(:upload_id)
         # Get the artist, then get the track using the artist MBID and MB search, pick the most likely one
         a = brainz.artist(a_id)
         u.atl("INFO", "MetadataJob: Got artist #{a_id}")
+        u.musicbrainz_artist_id = a_id
         t_id = nil
         possible_tracks = brainz.track(nil, :title=>u.title, :artistid=>a_id).track_list
         if possible_tracks.length >= 1 and possible_tracks.track
@@ -87,6 +87,7 @@ class MetadataJob < Struct.new(:upload_id)
         raise(ExternalMetadataError, "Could not find track #{u.title} in MusicBrainz") if !t_id
         t = brainz.track(t_id, :inc=>'isrcs+releases+artist-rels')
         u.atl("INFO", "MetadataJob: Got track #{t_id}")
+        u.musicbrainz_track_id = t_id
         # If we have more than one ISRC, pick the first one - we're not picky, this is all guesswork.
         if (t.track.isrc_list.length rescue 0) >= 1
           u.isrc = t.track.isrc_list.isrc[0].id rescue nil if !u.isrc

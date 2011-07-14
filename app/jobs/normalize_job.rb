@@ -16,16 +16,15 @@ class NormalizeJob < Struct.new(:upload_id)
     eca_path = Settings.path_to_import+"/"+u.filename+".eca.wav"
     File.delete(eca_path) if File.exists?(eca_path)
     # First things first: Let's store this track's waveform for pretty rendering purposes
-    if !u.upload_waveform
-      begin
-        wf = UploadWaveform.new
-        wf.upload_id = u.id
-        wf.data = R128.momentary(in_path, 0.4)
-        wf.save!
-        u.atl("INFO", "NormalizeJob: Built R128 momentary waveform data")
-      rescue Exception => e
-        u.atl("WARN", "NormalizeJob: Unable to build momentary waveform: #{e.inspect}")
-      end
+    begin
+      wf = UploadWaveform.new
+      wf.label = 'Pre-normalization'
+      wf.upload_id = u.id
+      wf.data = R128.momentary(in_path, 0.4)
+      wf.save!
+      u.atl("INFO", "NormalizeJob: Built pre-normalization R128 momentary waveform data")
+    rescue Exception => e
+      u.atl("WARN", "NormalizeJob: Unable to build momentary waveform: #{e.inspect}")
     end
     # Now let's scan this file and work out what we need to do.
     md = {}
@@ -58,7 +57,7 @@ class NormalizeJob < Struct.new(:upload_id)
     # Now we have the track at -23 LUFS. Now let's look at LRA. If it's > Settings.target_lra then we want to compress it gently.
     if md[:lra] > (Settings.target_lra.to_f+1) # Note the +1 - we don't care about stuff that is so close as to make compressing fairly pointless
       # Compress. But by how much?
-      comp_ratio = Settings.target_lra.to_f/md[:lra].to_f
+      comp_ratio = 1+(1-(Settings.target_lra.to_f/md[:lra].to_f))
       u.atl("INFO", "NormalizeJob: Track LRA needs reducing by #{(Settings.target_lra.to_f-md[:lra]).to_s} LU, using ratio #{comp_ratio.to_s}")
       # Now we've done a big unknown to our track, let's re-LUFS it.
     elsif md[:lra] < Settings.target_lra.to_f
@@ -67,18 +66,28 @@ class NormalizeJob < Struct.new(:upload_id)
       u.atl("INFO", "NormalizeJob: Track LRA does not require adjustment")
     end
     if comp_ratio != 1.0
-      u.atl("INFO", "NormalizeJob: Compressing by ratio #{comp_ratio.to_s}")
+      #r = Robocomp.new
+      #rcd = r.eval(md)
+      #u.atl("INFO", "NormalizeJob: Compressing by ratio #{comp_ratio.to_s}")
+      #u.atl("INFO", "NormalizeJob: Robocomp: #{rcd.inspect}")
       # ecasound -i:"01 New Born.mp3" -o:out_nb.wav -eca:69,0.01,0.8,
       begin
-        ecaout = IO.popen(['ecasound', '-i', in_path, '-o', eca_path, "-eca:69,1.0,0.5,#{comp_ratio.to_s}"]).read
+        ecaout = IO.popen(['ecasound', '-i', in_path, '-o', eca_path, "-el:sc4,0.5,0,250,-70,#{comp_ratio.to_s},4,6,0,0"]).read
         raise(EcasoundError, "ecasound didn't write any data: #{ecaout.to_s}") unless File.exists?(eca_path)
         md = R128.scan(eca_path)
-        gain = -23.0-md[:lufs] if md[:lufs] != -23.0
+        gain = -23.0-md[:lufs] if md[:lufs] != -23.0 # Recalculate target gain change
         u.atl("INFO", "NormalizeJob: Compressed by ratio #{comp_ratio.to_s}, new gain adjustment: #{gain.inspect}, new metadata: #{md.inspect}")
+        cwf = UploadWaveform.new
+        cwf.label = 'Post-compressor'
+        cwf.upload_id = u.id
+        cwf.data = R128.momentary(eca_path, 0.4)
+        cwf.save!
+        u.atl("INFO", "NormalizeJob: Built post-compression R128 momentary waveform data")
       rescue Exception => e
         u.atl("ERROR", "NormalizeJob: Unable to compress: #{e.inspect}")
       end
     end
+
     soxout = ''
     # We need to turn this down a little more- we're in danger of clipping on DACs and whatnot.
     if md[:true_peak_dbtp] > -1.0
@@ -99,6 +108,12 @@ class NormalizeJob < Struct.new(:upload_id)
         raise(SoxError, "sox didn't write any data: #{soxout}") unless File.exists?(out_path)
         u.atl("INFO", "NormalizeJob: Adjusted gain by #{gain.inspect}")
         u.atl("WARN", "NormalizeJob: sox reported clipping: #{soxout.inspect}")if soxout.include?("clipped")
+        gwf = UploadWaveform.new
+        gwf.label = 'Post-normalization'
+        gwf.upload_id = u.id
+        gwf.data = R128.momentary(out_path, 0.4)
+        gwf.save!
+        u.atl("INFO", "NormalizeJob: Built post-normalization R128 momentary waveform data")
       rescue Exception => e
         u.atl("ERROR","NormalizeJob: Unable to adjust gain: #{e.inspect}")
       end

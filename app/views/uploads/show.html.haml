@@ -1,4 +1,19 @@
 %h1="Upload Details: #{@upload.filename} - ID ##{@upload.id}"
+- if can? :manage, @upload and @upload.state == 'needs_review'
+  %div{:class=>'adminbox'}
+    %h2 Upload Pending Review
+    %p 
+      This upload has been flagged for review. Please check the log to see why, and either manually approve or reject it as appropriate.
+    %p
+      The following log entries are flagged as errors.
+    %pre
+      - @upload.log.split("\n").each do |l|
+        - if l.include?("ERROR - ")
+          = l
+    %p
+      = link_to 'Approve', approve_upload_path(@upload)
+      \-
+      = link_to 'Reject', reject_upload_path(@upload)
 %p
   %strong User:
   = @upload.user.email
@@ -15,7 +30,7 @@
   %strong Current Job Status:
   - if @upload.current_job_id 
     = dj_status(@upload.current_job_id)
-  - else 
+  - else
     No job running
 %p
   %em Title and artist metadata is only available for uploads with appropriate metadata
@@ -42,23 +57,39 @@
   %strong Record Label:
   = @upload.publisher or "No publisher metadata available"
 %p
+  %strong Composer:
+  = @upload.composer or "No composer metadata available"
+%p
   %strong Copyright:
   = @upload.copyright or "No copyright metadata available"
 %p
   %strong ISRC:
   = @upload.isrc or "No International Standard Recording Code available"
 %p
-  %strong Composer:
-  = @upload.composer or "No composer metadata available"
-
+  %strong MusicBrainz Artist ID:
+  %pre= @upload.musicbrainz_artist_id or "Artist was not found on MusicBrainz (or metadata job has not run yet)"
+%p
+  %strong MusicBrainz Track ID:
+  %pre= @upload.musicbrainz_track_id or "Track was not found on MusicBrainz (or metadata job has not run yet)"
 %h2 Processing Log
 %p
   %em The processing log contains raw output of programs and jobs used to process the upload for diagnostic and debugging purposes.
 %pre= @upload.log
 - job = Delayed::Job.find(@upload.current_job_id) rescue nil
 - if job and job.last_error
-
   %h2 Failure Traceback
   %pre= job.last_error.gsub('\n',"\n")
+%h2 Lyrics
+%p
+  %em If the track could be found on both MusicBrainz and MusixMatch, lyrics will be available here.
+%pre= @upload.lyrics or "No lyrics available"
 
+%h2 Loudness Waveforms
+- if @h
+  = high_chart("waveform", @h)
+  %p 
+    %em Note that this graph shows K-weighted 400ms gated loudness in accordance with EBU Recommendation 128 for loudness metering. It does not display true peak loudness. Use digital peak meters to avoid clipping in playout.
+- else
+  %p
+    %em A loudness waveform has not yet been produced for this track. This graph is generated during normalization.
 %p= link_to 'Back', uploads_path

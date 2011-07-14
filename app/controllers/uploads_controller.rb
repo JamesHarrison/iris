@@ -17,7 +17,21 @@ class UploadsController < ApplicationController
   def show
     authorize! :read, Upload
     @upload = Upload.accessible_by(current_ability).find(params[:id])
-
+    graph_cols = {'Pre-normalization'=>'#CC2200', 'Post-compressor'=>'#AAAAAA', 'Post-normalization'=>'#99FF00'}
+    if @upload.upload_waveforms and @upload.upload_waveforms.length > 0
+      @h = LazyHighCharts::HighChart.new('waveform') do |f|
+        @upload.upload_waveforms.each do |wf|
+          f.series(:name=>wf.label, :data=>wf.data, :type=>'area', :color=>graph_cols[wf.label])
+        end
+        f.chart({:defaultSeriesType=>'area'})
+        f.legend({:layout=>'vertical'})
+        f.plotOptions({:area=>{:color=>'#FF9900', :lineWidth=>1, :shadow=>false, :enableMouseTracking=>false, :marker=>{:enabled=>false}}})
+        f.title({:text=>'LUFS 400ms gated momentary loudness', :style=>'color:#333333;font-weight:bold;'})
+        f.xAxis({:labels=>{:enabled=>false}, :title=>{:text=>'Time', :style=>'color:#333333;'}})
+        f.yAxis({:title=>{:text=>'LUFS (dBFS)', :style=>'color:#333333;'}})
+        f.tooltip({:enabled=>false})
+      end
+    end
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @upload }
@@ -58,11 +72,13 @@ class UploadsController < ApplicationController
     authorize! :manage, Upload
     @upload = Upload.accessible_by(current_ability).find(params[:id])
     @upload.approve
+    redirect_to upload_path(@upload)
   end
   def reject
     authorize! :manage, Upload
     @upload = Upload.accessible_by(current_ability).find(params[:id])
     @upload.reject
+    redirect_to upload_path(@upload)
   end
   def flagged
     authorize! :manage, Upload

@@ -93,3 +93,8 @@ pre {
   width: 98%;
   overflow: auto;
   padding: 4px; }
+
+.adminbox {
+  padding: 25px;
+  background: #CCCCCC;
+  border: #FF0000 1px solid; }

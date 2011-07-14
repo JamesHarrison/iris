@@ -3,7 +3,7 @@ class CreateUploadWaveforms < ActiveRecord::Migration
     create_table :upload_waveforms do |t|
       t.integer :upload_id
       t.text :data
-
+      t.string :label
       t.timestamps
     end
   end

@@ -3,6 +3,10 @@
   %title IRIS
   = stylesheet_link_tag 'application'
   = javascript_include_tag :defaults
+  = javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'
+  = javascript_include_tag 'highcharts'
+  /[if IE]
+    = javascript_include_tag 'excanvas.compiled'
   = csrf_meta_tag
 %body
   #container

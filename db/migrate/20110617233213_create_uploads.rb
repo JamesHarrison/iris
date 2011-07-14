@@ -22,8 +22,11 @@ class CreateUploads < ActiveRecord::Migration
       t.integer :channels
       t.string :format
       t.string :long_format
+      t.string :musicbrainz_track_id
+      t.string :musicbrainz_artist_id
       t.integer :content_type
       t.text :log
+      t.text :lyrics
       t.timestamps
     end
     add_index :uploads, :user_id

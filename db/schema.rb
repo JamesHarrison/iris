@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20110619214933) do
   create_table "upload_waveforms", :force => true do |t|
     t.integer  "upload_id"
     t.text     "data"
+    t.string   "label"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -56,8 +57,11 @@ ActiveRecord::Schema.define(:version => 20110619214933) do
     t.integer  "channels"
     t.string   "format"
     t.string   "long_format"
+    t.string   "musicbrainz_track_id"
+    t.string   "musicbrainz_artist_id"
     t.integer  "content_type"
     t.text     "log"
+    t.text     "lyrics"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
