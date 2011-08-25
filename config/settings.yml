@@ -31,6 +31,10 @@ rivendell_import_enabled: false
 rivendell_import_segue_level: -60
 # Segue length in milliseconds
 rivendell_import_segue_length: 2000
+# Group to import to
+rivendell_import_group: "MUSIC"
+# Autotrim level (0 to disable)
+rivendell_import_autotrim_level: -90
 # - MYRIAD 3.5
 myriad_import_enabled: false
 # Comma-seperated list of hosts running Myriad with the TCP/IP remote port enabled
