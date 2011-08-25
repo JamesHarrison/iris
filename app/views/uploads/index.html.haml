@@ -1,13 +1,14 @@
-%h1 My Uploads
+- if can? :manage, Upload
+  %h1 Uploads
+- else
+  %h1 My Uploads
 %p
-  Any uploads you have made to the system and their current state are shown below.
+  Any uploads made to the system and their current state are shown below.
 %p
   Uploads pass through many states. Once they reach the state of "Imported", the upload is a success and the content can be loaded up in the playout system. If an upload "Needs review", it must be reviewed by an administrator before being passed on to import.
 %p
   Uploads that need review have been held back because they have possibly offensive lyrics, or because they do not pass the quality requirements.
-
-%p= link_to 'New Upload', new_upload_path
-
+= will_paginate @uploads
 - if @uploads and @uploads.size > 0
   %table
     %tr

@@ -2,6 +2,8 @@ class Upload < ActiveRecord::Base
   attr_accessible :filename, :cart_number, :current_job_id, :title, :artist, :album, :year, :copyright, :composer, :publisher, :isrc, :genre, :bitrate, :log
   belongs_to :user
   has_many :upload_waveforms
+  cattr_reader :per_page
+  @@per_page = 50
   def atl(level, message)
     self.transaction do
       self.log = "" unless self.log

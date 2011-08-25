@@ -4,7 +4,7 @@ class UploadsController < ApplicationController
   # GET /uploads.xml
   def index
     authorize! :read, Upload
-    @uploads = Upload.accessible_by(current_ability).limit(25).order('id DESC').all
+    @uploads = Upload.accessible_by(current_ability).order('id DESC').paginate(:page=>params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -84,6 +84,6 @@ class UploadsController < ApplicationController
   end
   def flagged
     authorize! :manage, Upload
-    @uploads = Upload.accessible_by(current_ability).where(:state=>'needs_review').all
+    @uploads = Upload.accessible_by(current_ability).where(:state=>['needs_review', 'rejected', 'approved']).paginate(:page=>params[:page])
   end
 end

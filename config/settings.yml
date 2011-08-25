@@ -1,7 +1,9 @@
 # COSMETIC SETTINGS
 site_title: "Interchangeable Radio Ingest System"
-footer_text: "My Radio Station"
+footer_text: "My Little Radio Station"
 # INTERNAL PATHS
+# Path to import from the filesystem with when running rake iris:import
+import_path: /tmp/some-file-path/
 # Path where you've got nginx's upload module dumping stuff - needs write access
 path_to_uploads: /tmp
 # Path to wherever you want FLACs of the uploads archived pre-normalization

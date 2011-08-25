@@ -1,8 +1,7 @@
 %h1 Uploads Pending Review
 %p
   Uploads listed here are those uploads that have been filtered out for various reasons.
-%p= link_to 'New Upload', new_upload_path
-
+= will_paginate @uploads
 - if @uploads and @uploads.size > 0
   %table
     %tr
@@ -24,7 +23,10 @@
           - else
             =link_to upload.filename, upload
         %td= link_to 'More Details', upload
-        %td= link_to 'Approve', approve_upload_path(upload)
-        %td= link_to 'Reject', reject_upload_path(upload)
+        - if upload.state == 'needs_review'
+          %td= link_to 'Approve', approve_upload_path(upload)
+          %td= link_to 'Reject', reject_upload_path(upload)
+        - else
+          %td{:colspan=>2}= "Already #{upload.state.downcase}"
 - else
   %p No uploads have been flagged yet.

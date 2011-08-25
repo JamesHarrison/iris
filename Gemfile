@@ -21,6 +21,7 @@ gem 'ruby-graphviz', :require => 'graphviz'
 gem 'cancan'
 gem 'delayed_job'
 gem 'rails_config'
+gem 'will_paginate', "~> 3.0.pre2"
 # pretties
 gem 'lazy_high_charts'
 # Metadata libs
