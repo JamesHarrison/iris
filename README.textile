@@ -1,6 +1,6 @@
 h1. Welcome to IRIS
 
-IRIS is the Interchangeable Radio Ingest System. It's not a brilliant name, but what the heck.
+IRIS is the Interchangeable Radio Ingest System.
 
 It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system. Of course, this playout system could be anything- the current targets for automatic import to playout systems are the Rivendell broadcast atuomation sysetm and the Myriad 3.5 system from P Squared, but you can manually import the resultant files into anything.
 
@@ -35,35 +35,45 @@ IRIS requires:
 * Ruby (1.9.2 recommended; I usually do a from-source install from ruby-lang.org, saves headaches) and development headers (not needed if you did it from source)
 * The bundler gem (sudo gem install bundler)
 * sox, ecasound, ffmpeg and exiftool (all available in Ubuntu's repos, other distros may vary)
-* The SC4 LADSPA compressor (available in swh-plugins in Ubuntu)
+* The SC4 LADSPA compressor (available in swh-plugins in Ubuntu- may be omitted if you're not using LRA adjustment)
 * r128-scanner from libebur128 (https://github.com/jiixyj/libebur128)
 * nginx with the nginx upload module (http://www.grid.net.ru/nginx/upload.en.html)
 * A database server (PostgreSQL highly recommended)
 * libxml-dev, libxslt-dev, graphviz-dev, ffmpeg-dev libraries
+* rdimport available on job workers (only for Rivendell systems- basically, your job workers need to be configured Rivendell installs)
 
-... and that's it. (Yeah, there's a fair bit there.)
+... and that's it. Yeah, there's a fair few things there- however on most platforms the only things you need to manually grab and build are nginx and libebur128, both of which are straightforward. The rest can be pulled in by a package manger.
 
-Once you've installed the prerequisites, just git clone the repo to somewhere, cd in, and run <code>bundle install</code> to get the required gems. Once that's done, copy config/database.yml.example to config/database.yml, configure it.
+Once you've installed the prerequisites, just git clone the repo to somewhere, cd in, and run <code>bundle install</code> to get the required gems. Once that's done, copy config/database.yml.example to config/database.yml, configure it. You'll also need to adjust config/settings.yml - if you plan to update directly, copy this to config/settings.local.yml and update that instead.
 
-Then you just <code>rake db:migrate</code> to set up the DB, <code>rails server thin</code> to start the application server (run that in a screen), fire up nginx with the config in doc/nginx.conf.example (or roll your own based on that), and grab another screen and run <code>rake jobs:work</code>. Bam. Now you can open localhost:81 in a browser, and upload stuff and see everything just work. In theory.
+Then you just <code>rake db:migrate</code> to set up the DB, <code>rails server thin</code> to start the application server (run that in a screen), fire up nginx with the config in doc/nginx.conf.example (or roll your own based on that), and grab another screen and run <code>rake jobs:work</code>. Bam! Now you can open http://localhost:81 in a browser, and upload stuff and see everything just work. In theory.
 
 If you've worked with Rails before: It's a bog-standard Rails 3 app with some audio cleverness added in via external programs and a nginx upload module requirement. Flavour to taste.
 
-Deployment can be automated with capistrano if you've got a few boxes you want to run it across to share the load (r128-scanner and ecasound can use a lot of CPU, as can FLAC encoding and so on...)
+Deployment can be automated with capistrano if you've got a few boxes you want to run it across to share the load (r128-scanner and ecasound can use a lot of CPU, as can FLAC encoding and so on...).
 
+h2. Importing to playout systems
+
+Currently Rivendell is supported for automatic library import- you will need rdimport available on the job workers to take advantage of this at present (rdxport delegation may be usable in the future). Currently _all_ job workers will require rdimport, as delayed_job can pass an ImportJob to any worker. 
+
+It should be possible (assuming shared storage on common paths) to make rdimport on some workers just a wrapper script that sshes across to another machine which has rdimport installed and runs the command there.
+
+Myriad support has not yet been added- I'm waiting for P Squared to do something about the stability of their import interface, as currently it crashes systems far too often for it to be usable.
+
+Direct tagged file output is not yet there either, but will be soon. This will let librarians do manual import of files, but won't pass all metadata across.
 
 h2. History
 
-IRIS is the successor to MACIS, a similar system originally developed to interface with the Myriad playout system at Insanity Radio 1287AM (http://insanityradio.com). MACIS was slapped together in a couple of days and didn't work very well.
+IRIS is the successor to MACIS, a similar system originally deloped to interface with the Myriad playout system at Insanity Radio 1287AM (http://insanityradio.com). MACIS was slapped together in a couple of days and didn't work very well due to bugs in Myriad's TCP/IP interface and database. It didn't do anything clever, either, so mostly just got more duplicates in faster, and since it didn't log anything... well, I learned a lot from it.
 
-IRIS was originally slapped together in about a week and works way, way better than MACIS ever did. MACIS was also site-specific; IRIS was developed to be taken to other stations where appropriate, and to be a more generally usable system.
+IRIS was originally slapped together in about a week and works way, way better than MACIS ever did. MACIS was also site-specific; IRIS was developed to be used in any radio station or other environment where audio content needed importing, processing and normalizing as part of a content ingest chain. It is targeted at professional users.
 
 h2. Credits
 
-IRIS wouldn't work without a whole boatload of Linux audio tools, so a huge collective thank-you to the Linux audio development community.
+IRIS wouldn't work without a whole boatload of Linux audio tools, so a huge collective thank-you to the Linux audio development community. The sheer number of awesome tools, utilities and communities out there astounds me constantly.
 
-IRIS was written by James Harrison (http://talkunafraid.co.uk), Insanity's Head of Technology from 2010 till 2012.
+IRIS was written by James Harrison (http://talkunafraid.co.uk), Insanity's Head of Technology from 2010 till 2011, and freelance broadcast engineer, webapp developer and all-round geek.
 
 h2. License
 
-IRIS is licensed under the GNU GPL v3 or greater, except where otherwise noted (external libs and such).
+IRIS is licensed under the GNU GPL v3 or greater, except where otherwise noted (external libraries and such).
