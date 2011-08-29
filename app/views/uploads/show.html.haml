@@ -42,6 +42,13 @@
 %p
   %strong Cart Number:
   = @upload.cart or "Not imported to playout system yet"
+- if can? :manage, @upload
+  %div{:class=>'subtleadminbox', :id=>'cartnumberedit'}
+    = form_tag "/uploads/#{@upload.id}/set_cart_number", :method => :post, :id => 'cn' do 
+      = label_tag :cart_number, 'Set cart number'
+      = text_field_tag :cart_number, @upload.cart
+      = submit_tag 'Set'
+
 %p
   %strong Current Job Status:
   - if @upload.current_job_id 

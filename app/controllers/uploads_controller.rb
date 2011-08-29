@@ -82,6 +82,13 @@ class UploadsController < ApplicationController
     @upload.atl("ERROR", "WebInterface: Upload rejected by #{current_user.name}/#{current_user.id}/#{current_user.email}")
     redirect_to upload_path(@upload)
   end
+  def set_cart_number
+    authorize! :manage, Upload
+    @upload = Upload.accessible_by(current_ability).find(params[:id])
+    @upload.cart = params[:cart_number]
+    @upload.atl("INFO", "WebInterface: Upload cart number set to #{@upload.cart} by #{current_user.name}/#{current_user.id}/#{current_user.email}")
+    redirect_to upload_path(@upload)
+  end
   def flagged
     authorize! :manage, Upload
     @uploads = Upload.accessible_by(current_ability).where(:state=>['needs_review', 'rejected', 'approved']).paginate(:page=>params[:page])

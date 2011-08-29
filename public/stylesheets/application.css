@@ -129,3 +129,14 @@ pre {
   .adminbox h2 {
     text-rendering: optimizeLegibility;
     text-shadow: 0px 0px 1px #CCC; }
+
+.subtleadminbox {
+  padding: 5px;
+  background: #FFFFDD;
+  border: 1px solid #FF9900; }
+  .subtleadminbox input {
+    border: 1px solid #CCC; }
+  .subtleadminbox label {
+    width: 100px; }
+  .subtleadminbox input[type="submit"] {
+    margin-left: 10px; }

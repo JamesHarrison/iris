@@ -10,6 +10,7 @@ Iris::Application.routes.draw do
     member do
       get 'approve'
       get 'reject'
+      post 'set_cart_number'
     end
   end
 

@@ -141,3 +141,17 @@ pre {
     text-shadow: 0px 0px 1px #CCC;
   }
 }
+.subtleadminbox {
+  padding:5px;
+  background:#FFFFDD;
+  border:1px solid #FF9900;
+  input {
+    border:1px solid #CCC;
+  }
+  label {
+    width:100px;
+  }
+  input[type="submit"] {
+    margin-left:10px;
+  }
+}
