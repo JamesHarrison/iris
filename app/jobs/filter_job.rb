@@ -51,8 +51,7 @@ class FilterJob < Struct.new(:upload_id)
           u.save!
           lyrics = lyrics.downcase
           # We now have the lyrics in a string.
-          badwords = ['nigger', 'shit', 'fuck', 'cunt', 'cock', 'bastard']
-          for word in badwords
+          for word in Settings.bad_words
             if lyrics.include?(word)
               u.atl("ERROR", "FilterJob: Lyric filtering flagged song for review based on badword #{word}")
               lyrics_okay = false

@@ -2,13 +2,13 @@
 site_title: "Interchangeable Radio Ingest System"
 footer_text: "My Little Radio Station"
 # INTERNAL PATHS
-# Path to import from the filesystem with when running rake iris:import
+# Path to import from the filesystem with when running rake iris:import. If you're not using filesystem ingest, ignore.
 import_path: /tmp/some-file-path/
-# Path where you've got nginx's upload module dumping stuff - needs write access
+# Path where you've got nginx's upload module dumping stuff - needs to be writeable by IRIS
 path_to_uploads: /tmp
 # Path to wherever you want FLACs of the uploads archived pre-normalization
 path_to_archive: /tmp/archive
-# Path to wherever you want the original uploads backing up
+# Path to wherever you want the original uploads backing up (you'll probably want to set up a cron to delete old files in this path)
 path_to_orig_backup: /tmp/orig
 # Path to wherever you want the final files exporting to. Playout systems importing from IRIS need access to at least this.
 path_to_import: /tmp/import
@@ -22,9 +22,26 @@ target_lra: 8.0
 # These values specify limits in filtering, bitrate in kbps, sample rate in Hz
 minimum_bitrate: 128
 minimum_sample_rate: 44100
+# This is the list of words which will trigger filter blocking. Does not have to occur spaced (ie fuck will pick up fucked and fucking and fucker, and cock will also false positive on poppycock. It's a tradeoff.) You can do more complex strings enclosed in "quotes"
+# This list is by no means exhaustive. Flavour to taste.
+bad_words:
+  - shit
+  - nigger
+  - cunt
+  - fuck
+  - bitch
+  - cock
+  - bastard
 # If you have a _FULL LYRICS_ API key for MusixMatch, enter it here
 musixmatch_api_key: nil
-# IMPORT MODULES
+# PLAYOUT SYSTEM IMPORT MODULES (this stuff gets your data out of IRIS at the other end)
+# - TAGGED FILE EXPORT
+# Use this to make IRIS export a file which is tagged as much as possible for import into playout systems manually.
+file_import_enabled: false
+# Allowed formats: mp3, bwf, wav
+# MP3 will be tagged with as much as ID3v2 allows. BWF will have only basic information. WAV will not be tagged.
+# Qualities exported will be the highest possible. Samplerate will always be 48k to avoid multiple resampling (we resample everything once already to 48k)
+file_import_format: "mp3"
 # - RIVENDELL
 rivendell_import_enabled: false
 # Segue marker threshold in dBFS
@@ -36,6 +53,7 @@ rivendell_import_group: "MUSIC"
 # Autotrim level (0 to disable)
 rivendell_import_autotrim_level: -90
 # - MYRIAD 3.5
+# (currently not implemented - enabling will just throw a warning)
 myriad_import_enabled: false
 # Comma-seperated list of hosts running Myriad with the TCP/IP remote port enabled
 myriad_import_hosts: nil

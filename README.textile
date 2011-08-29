@@ -40,6 +40,7 @@ IRIS requires:
 * nginx with the nginx upload module (http://www.grid.net.ru/nginx/upload.en.html)
 * A database server (PostgreSQL highly recommended)
 * libxml-dev, libxslt-dev, graphviz-dev, ffmpeg-dev libraries
+* Optionally for bwf export, bwfmetaedit (http://bwfmetaedit.sourceforge.net)
 
 ... and that's it. (Yeah, there's a fair bit there.)
 
