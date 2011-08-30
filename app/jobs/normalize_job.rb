@@ -72,7 +72,8 @@ class NormalizeJob < Struct.new(:upload_id)
       #u.atl("INFO", "NormalizeJob: Robocomp: #{rcd.inspect}")
       # ecasound -i:"01 New Born.mp3" -o:out_nb.wav -eca:69,0.01,0.8,
       begin
-        ecaout = IO.popen(['ecasound', '-i', in_path, '-o', eca_path, "-el:sc4,0.5,0,250,-70,#{comp_ratio.to_s},4,6,0,0"]).read
+        ecaout = ''
+        IO.popen(['ecasound', '-i', in_path, '-o', eca_path, "-el:sc4,0.5,0,250,-70,#{comp_ratio.to_s},4,6,0,0"]){|io|ecaout = io.read}
         raise(EcasoundError, "ecasound didn't write any data: #{ecaout.to_s}") unless File.exists?(eca_path)
         md = R128.scan(eca_path)
         gain = -23.0-md[:lufs] if md[:lufs] != -23.0 # Recalculate target gain change
@@ -100,10 +101,11 @@ class NormalizeJob < Struct.new(:upload_id)
       u.atl("INFO", "NormalizeJob: Adjusting gain by #{gain.inspect}")
       begin
         # Explanation on sox options: gain followed by a number changes the amplitude. The -l option should be applied when adding gain- this adds a limiter to prevent clipping. -D disables automatic dithering.
+        soxout = ''
         if gain > 0
-          soxout = IO.popen(['sox', (File.exists?(eca_path) ? eca_path : in_path), out_path, 'gain', '-l', gain.to_s]).read
+          IO.popen(['sox', (File.exists?(eca_path) ? eca_path : in_path), out_path, 'gain', '-l', gain.to_s]){|io|soxout = io.read}
         else
-          soxout = IO.popen(['sox', (File.exists?(eca_path) ? eca_path : in_path), out_path, 'gain', gain.to_s]).read
+          IO.popen(['sox', (File.exists?(eca_path) ? eca_path : in_path), out_path, 'gain', gain.to_s]){|io|soxout = io.read}
         end
         raise(SoxError, "sox didn't write any data: #{soxout}") unless File.exists?(out_path)
         u.atl("INFO", "NormalizeJob: Adjusted gain by #{gain.inspect}")

@@ -1,5 +1,9 @@
 %h1 Welcome to IRIS
 %p
   IRIS is a content ingest and processing system for broadcast media.
-%p
-  Please log in using the menu above to upload content.
+- if current_user
+  %p
+    Welcome back. Please use the menus above to upload your content or check the progress of past uploads.
+- else
+  %p
+    Please log in using the menu above to upload content.

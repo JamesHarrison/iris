@@ -14,7 +14,8 @@ class ArchiveJob < Struct.new(:upload_id)
     out_path_orig = Settings.path_to_orig_backup+"/#{u.id}---"+u.filename
     File.delete(out_path) if File.exists?(out_path)
     begin
-      flac_out = IO.popen(['flac', '--best', '--tag=TITLE='+u.title, '--tag=ARTIST='+u.artist, '--tag=ALBUM='+u.album, in_path, '-o', out_path]).read
+      flac_out = ''
+      IO.popen(['flac', '--best', '--tag=TITLE='+u.title, '--tag=ARTIST='+u.artist, '--tag=ALBUM='+u.album, in_path, '-o', out_path]){|io|flac_out = io.read}
       raise(NoOutputError, "flac didn't write anything") unless File.exists?(out_path)
       u.atl("INFO", "ArchiveFileJob: flac conversion finished, wrote to #{out_path}")
     rescue Exception => e

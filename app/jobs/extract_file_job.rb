@@ -10,7 +10,8 @@ class ExtractFileJob < Struct.new(:upload_id)
     out_path = Settings.path_to_import+"/"+u.filename+".wav"
     File.delete(out_path) if File.exists?(out_path)
     begin
-      ffmpeg_out = IO.popen(['ffmpeg', '-i', in_path, out_path]).read
+      ffmpeg_out = ''
+      IO.popen(['ffmpeg', '-i', in_path, out_path]){|io|ffmpeg_out = io.read}
       #stdin, stdout, stderr = Open3.popen3(['ffmpeg', '-i', in_path, out_path])
       raise(NoOutputError, "ffmpeg didn't write anything") unless File.exists?(out_path)
       u.atl("INFO", "ExtractFileJob: ffmpeg conversion finished")

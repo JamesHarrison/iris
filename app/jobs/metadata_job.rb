@@ -29,7 +29,8 @@ class MetadataJob < Struct.new(:upload_id)
     end
     begin
       # Non-technical metadata (artist, title, album etc) we go to exiftool for, because it rocks. Seriously.
-      exif_stdout = IO.popen(['exiftool', (Settings.path_to_uploads+"/"+u.filename)]).read
+      exif_stdout = ''
+      IO.popen(['exiftool', (Settings.path_to_uploads+"/"+u.filename)]){|io| exif_stdout = io.read }
       conv = Iconv.new("US-ASCII//TRANSLIT//IGNORE", "UTF8");
       # motherofgod.jpg (This just takes the output of exiftool, cleans it up somewhat, uses iconv to convert any special utf-8 characters to ASCII (ignoring anything it can't transliterate) and spits out a hash
       exif = exif_stdout.gsub("  ", "").split("\n").map{|l|l.split(":")}.map{|kv|[kv[0].strip,kv[1].strip]}.inject({}){|r,e|r[e[0]]=(conv.iconv(e[1]) rescue e[1]);r}
