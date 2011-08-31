@@ -2,10 +2,9 @@ h1. Welcome to IRIS
 
 IRIS is the Interchangeable Radio Ingest System.
 
-It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system. Of course, this playout system could be anything- the current targets for automatic import to playout systems are the Rivendell broadcast atuomation sysetm and the Myriad 3.5 system from P Squared, but you can manually import the resultant files into anything.
+It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system. Of course, this playout system could be anything- the current targets for automatic import to playout systems are the "Rivendell":http://rivendellaudio.org broadcast automation system, as well as a generic tagged file output (Broadcast WAVE Format/Linear PCM, untagged Linear PCM or high-as-possible MPEG Layer 3 with IDv2/1 tags, or tagged FLAC) which can be ingested to a playout system manually or via auto-import tools built into the playout system.
 
 The goal is to make adhesion to guidelines for technical quality in radio and other broadcast systems easier, and to automate as much of the ingest process as is possible in most workflows.
-
 
 h2. Introduction
 
@@ -59,15 +58,15 @@ Currently Rivendell is supported for automatic library import- you will need rdi
 
 It should be possible (assuming shared storage on common paths) to make rdimport on some workers just a wrapper script that sshes across to another machine which has rdimport installed and runs the command there.
 
-Myriad support has not yet been added- I'm waiting for P Squared to do something about the stability of their import interface, as currently it crashes systems far too often for it to be usable.
+A Myriad TCP/IP remote import function was planned, but P Squared released an auto import tool with Myriad 3.6 which permits automatic import from the filesystem. This can be used with the tagged file output mode to get basic metadata across.
 
-Direct tagged file output is not yet there either, but will be soon. This will let librarians do manual import of files, but won't pass all metadata across.
+The file import mode will output a file (format one of linear PCM WAV, Broadcast Wave Format/linear PCM, MPEG Layer 3 and FLAC), which can then be automatically imported (such as in Myriad's case) or manually imported by a librarian. This mode also allows you to use IRIS with pretty much any use in mind- be it broadcast video, processing audio for playout as a DJ, or just to get all the levels about right for a few playlists so you can listen in the car without fiddling with the volume all the time.
 
 h2. History
 
 IRIS is the successor to MACIS, a similar system originally deloped to interface with the Myriad playout system at Insanity Radio 1287AM (http://insanityradio.com). MACIS was slapped together in a couple of days and didn't work very well due to bugs in Myriad's TCP/IP interface and database. It didn't do anything clever, either, so mostly just got more duplicates in faster, and since it didn't log anything... well, I learned a lot from it.
 
-IRIS was originally slapped together in about a week and works way, way better than MACIS ever did. MACIS was also site-specific; IRIS was developed to be used in any radio station or other environment where audio content needed importing, processing and normalizing as part of a content ingest chain. It is targeted at professional users.
+IRIS was originally slapped together in about a week and works way, way better than MACIS ever did. MACIS was also site-specific; IRIS was developed to be used in any radio station or other environment where audio content needed importing, processing and normalizing as part of a content ingest chain. It is targeted at professional users, but is simple enough (and free) so may be used by anyone.
 
 h2. Credits
 

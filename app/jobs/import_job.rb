@@ -60,11 +60,6 @@ class ImportJob < Struct.new(:upload_id)
         u.import_failure
       end
     end
-    # This way lies madness- Myriad 3.5 importer.
-    if Settings.myriad_import_enabled == true
-      u.atl("WARN", "ImportJob: Myriad import enabled, but not implemented")
-      u.import_failure
-    end
     u.atl("INFO", "ImportJob: Finished")
   end
   # This chunk of thinking is shared between Myriad and file import modes.

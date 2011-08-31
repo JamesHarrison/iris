@@ -52,10 +52,3 @@ rivendell_import_segue_length: 2000
 rivendell_import_group: "MUSIC"
 # Autotrim level (0 to disable)
 rivendell_import_autotrim_level: -90
-# - MYRIAD 3.5
-# (currently not implemented - enabling will just throw a warning)
-myriad_import_enabled: false
-# Comma-seperated list of hosts running Myriad with the TCP/IP remote port enabled
-myriad_import_hosts: nil
-# Path on the Myriad boxes to the path_to_import Samba/NFS share
-myriad_import_path: "\\iris_machine\import"
