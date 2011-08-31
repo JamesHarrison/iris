@@ -6,9 +6,9 @@ footer_text: "My Little Radio Station"
 import_path: /tmp/some-file-path/
 # Path where you've got nginx's upload module dumping stuff - needs to be writeable by IRIS
 path_to_uploads: /tmp
-# Path to wherever you want FLACs of the uploads archived pre-normalization
+# Path to wherever you want FLACs of the uploads archived pre-normalization. Set to 'none' to skip archival
 path_to_archive: /tmp/archive
-# Path to wherever you want the original uploads backing up (you'll probably want to set up a cron to delete old files in this path)
+# Path to wherever you want the original uploads backing up (you'll probably want to set up a cron to delete old files in this path). Set to 'none' to skip backing up originals
 path_to_orig_backup: /tmp/orig
 # Path to wherever you want the final files exporting to. Playout systems importing from IRIS need access to at least this.
 path_to_import: /tmp/import
@@ -38,10 +38,12 @@ musixmatch_api_key: nil
 # - TAGGED FILE EXPORT
 # Use this to make IRIS export a file which is tagged as much as possible for import into playout systems manually.
 file_import_enabled: false
-# Allowed formats: mp3, bwf, wav
+# Allowed formats: mp3, bwf, wav, aac, flac
 # MP3 will be tagged with as much as ID3v2 allows. BWF will have only basic information. WAV will not be tagged.
-# Qualities exported will be the highest possible. Samplerate will always be 48k to avoid multiple resampling (we resample everything once already to 48k)
-file_import_format: "mp3"
+# AAC and FLAC will be tagged fairly completely.
+# BWF refers to the linear PCM flavour- basically a WAV with tags.
+# Everything goes out as high-quality as possible with the lossy codecs (mp3/aac), and lossless in all other cases (flac, wav, bwf)
+file_import_format: mp3
 # - RIVENDELL
 rivendell_import_enabled: false
 # Segue marker threshold in dBFS
@@ -52,3 +54,29 @@ rivendell_import_segue_length: 2000
 rivendell_import_group: "MUSIC"
 # Autotrim level (0 to disable)
 rivendell_import_autotrim_level: -90
+
+# EMAIL
+# IRIS can send emails on various events. To use this functionality, configure it below. Note this is independent from the authentication system.
+# From address used for all emails
+email_from_address: please-configure-me@example.org
+email_prefix: "[IRIS] "
+# - NOTIFY ON FILTER FAILURE
+# Sends emails when an upload is rejected for bad_words or quality
+# Email a specific address?
+email_filter_notification: false
+# If so, set it below.
+email_filter_address: your-review-team@example.org
+# Email the original uploader? This will not email the user with ID=1 (the first user made) as this user is the uploader for all filesystem uploads.
+email_filter_notify_uploader: false
+# Include ERROR lines from the log in the email? Recommended.
+email_filter_include_log_error_lines: true
+# - NOTIFY ON GENERAL FAILURE
+# Any technical failures (ie not filter failures) will use these rules.
+# Email to a specific address?
+email_failure_notification: false
+# If so, set it below.
+email_failure_address: your-it-team@example.org
+# Email the original uploader?
+email_failure_notify_uploader: false
+# Include ERROR lines from the log in the email? Recommended.
+email_failure_include_log_error_lines: true

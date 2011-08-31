@@ -1,0 +1,37 @@
+%h2 IRIS Upload Filtering Notification
+%h4= @upload_name
+
+%p
+  The upload of
+  %strong= @upload.filename
+  requires attention; the file was prohibited from reaching the playout system.
+%p
+  This can happen for a couple of reasons:
+%ul
+  %li
+    Your song is wrapped in a M4P container and is encrypted, and thus cannot be decoded by IRIS.
+  %li 
+    Your file is of too low a quality to be accepted. Minimums for this system are
+    %strong= Settings.minimum_bitrate.to_s
+    kbps bitrate with a sample rate of
+    %strong= Settings.minimum_sample_rate.to_s
+    Hz.
+  %li
+    Your file contains a word not suitable for broadcast on air.
+  %li
+    There was some technical fault with the ingest system that prevented this upload from being processed.
+
+%p
+  You will need to ask a music team member to manually review the file if this is a special case such as a rare song or where the song contains no air-unsafe words but is being miscorrectly flagged as containing one or more such words. Do not reupload content that is filtered for these reasons.
+%p
+  Encrypted files simply cannot be uploaded and the music team will not be able to bypass the filter in this case. You should obtain a DRM-free copy of the file and reupload.
+
+- if Settings.email_filter_include_log_error_lines
+  %pre
+    - @upload.log.split("\n").each do |l|
+      - if l.include?("ERROR - ")
+        = l
+
+%p
+  %strong
+    \- IRIS Automated System

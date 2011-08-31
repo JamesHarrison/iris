@@ -124,4 +124,5 @@ class NormalizeJob < Struct.new(:upload_id)
     u.atl("INFO", "NormalizeJob: Finished")
     u.normalization_okay
   end
+  def failure;u = Upload.find(self.upload_id);u.mark_failed; end
 end

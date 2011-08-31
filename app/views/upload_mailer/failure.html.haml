@@ -1,0 +1,17 @@
+%h2 IRIS Upload Failure Notification
+%h4= @upload_name
+
+%p
+  The upload of
+  %strong= @upload.filename
+  requires attention; the file encountered an error during processing.
+
+- if Settings.email_failure_include_log_error_lines
+  %pre
+    - @upload.log.split("\n").each do |l|
+      - if l.include?("ERROR - ")
+        = l
+
+%p
+  %strong
+    \- IRIS Automated System

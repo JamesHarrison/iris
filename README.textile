@@ -2,7 +2,7 @@ h1. Welcome to IRIS
 
 IRIS is the Interchangeable Radio Ingest System.
 
-It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system. Of course, this playout system could be anything- the current targets for automatic import to playout systems are the "Rivendell":http://rivendellaudio.org broadcast automation system, as well as a generic tagged file output (Broadcast WAVE Format/Linear PCM, untagged Linear PCM or high-as-possible MPEG Layer 3 with IDv2/1 tags, or tagged FLAC) which can be ingested to a playout system manually or via auto-import tools built into the playout system.
+It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system. Of course, this playout system could be anything- the current targets for automatic import to playout systems are the "Rivendell":http://rivendellaudio.org broadcast automation system, as well as a generic tagged file output (Broadcast WAVE Format/Linear PCM, untagged Linear PCM or high-as-possible MPEG Layer 3 with IDv2/1 tags, tagged FLAC or tagged AAC) which can be ingested to a playout system manually or via auto-import tools built into the playout system.
 
 The goal is to make adhesion to guidelines for technical quality in radio and other broadcast systems easier, and to automate as much of the ingest process as is possible in most workflows.
 
@@ -16,7 +16,7 @@ Audio first uploaded is scanned for technical (bitrate, samplerate, format, etc)
 
 It features quality (bitrate/samplerate) filtering and supports filtering of explicit lyrics through the MusixMatch service (commercial in some cases, but reasonably cheap and free for non-commercial uses). Filtered uploads can be reviewed and either accepted or rejected by an administrator.
 
-Audio being introduced to the system is archived to FLAC prior to processing, preserving an original copy of the file in case normalization needs to be reversed. Originals of uploads are also kept for debugging failed uploads etc, with the idea being that you nuke the originals every few days and keep the FLACs to hand in a consistent format.
+Audio being introduced to the system can be archived to FLAC prior to processing, preserving an original copy of the file in case normalization needs to be reversed. Originals of uploads can also be kept for debugging failed uploads etc, with the idea being that you nuke the originals every few days and keep the FLACs to hand in a consistent format long-term, since storage is cheap these days.
 
 Once audio is unpacked to WAV (via ffmpeg, so incoming files can be pretty much anything), it is normalized with an aim to not comply per-se but at least motion towards the EBU R128 standard for loudness levelling.
 
@@ -33,7 +33,7 @@ IRIS requires:
 
 * Ruby (1.9.2 recommended; I usually do a from-source install from ruby-lang.org, saves headaches) and development headers (not needed if you did it from source)
 * The bundler gem (sudo gem install bundler)
-* sox, ecasound, ffmpeg and exiftool (all available in Ubuntu's repos, other distros may vary)
+* sox, ecasound, ffmpeg, flac and exiftool (all available in Ubuntu's repos, other distros may vary)
 * The SC4 LADSPA compressor (available in swh-plugins in Ubuntu- may be omitted if you're not using LRA adjustment)
 * r128-scanner from libebur128 (https://github.com/jiixyj/libebur128)
 * nginx with the nginx upload module (http://www.grid.net.ru/nginx/upload.en.html)
@@ -41,6 +41,8 @@ IRIS requires:
 * libxml-dev, libxslt-dev, graphviz-dev, ffmpeg-dev libraries
 * Optionally for bwf export, bwfmetaedit (http://bwfmetaedit.sourceforge.net)
 * Optionally for Rivendell import, rdimport available on job workers
+* Optionally for mp3 export, lame and id3tag
+* Optionally for aac export, faac
 
 ... and that's it. Yeah, there's a fair few things there- however on most platforms the only things you need to manually grab and build are nginx and libebur128, both of which are straightforward. The rest can be pulled in by a package manger.
 
@@ -50,7 +52,7 @@ Then you just <code>rake db:migrate</code> to set up the DB, <code>rails server 
 
 If you've worked with Rails before: It's a bog-standard Rails 3 app with some audio cleverness added in via external programs and a nginx upload module requirement. Flavour to taste.
 
-Deployment can be automated with capistrano if you've got a few boxes you want to run it across to share the load (r128-scanner and ecasound can use a lot of CPU, as can FLAC encoding and so on...).
+Deployments can be distributed if you've got a few boxes you want to run it across to share the load (r128-scanner and ecasound can use a lot of CPU, as can FLAC encoding and so on...). This is designed to let the system make use of multiple low-cost computers for quick batch processing.
 
 h2. Importing to playout systems
 
@@ -60,7 +62,7 @@ It should be possible (assuming shared storage on common paths) to make rdimport
 
 A Myriad TCP/IP remote import function was planned, but P Squared released an auto import tool with Myriad 3.6 which permits automatic import from the filesystem. This can be used with the tagged file output mode to get basic metadata across.
 
-The file import mode will output a file (format one of linear PCM WAV, Broadcast Wave Format/linear PCM, MPEG Layer 3 and FLAC), which can then be automatically imported (such as in Myriad's case) or manually imported by a librarian. This mode also allows you to use IRIS with pretty much any use in mind- be it broadcast video, processing audio for playout as a DJ, or just to get all the levels about right for a few playlists so you can listen in the car without fiddling with the volume all the time.
+The file import mode will output a file (format one of linear PCM WAV, Broadcast Wave Format/linear PCM, MPEG Layer 3, AAC and FLAC), which can then be automatically imported (such as in Myriad's case) or manually imported by a librarian. This mode also allows you to use IRIS with pretty much any use in mind- be it broadcast video, processing audio for playout as a DJ, or just to get all the levels about right for a few playlists so you can listen in the car without fiddling with the volume all the time.
 
 h2. History
 

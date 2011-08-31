@@ -28,7 +28,7 @@ a:hover {
   width:100%;
   font-size: 16px;
   height:50px;
-  a {
+  a, a:active, a:visited {
     text-shadow: 0px 0px 2px #000;
     font-family: times, Times New Roman, times-roman, georgia, serif;
     font-size: 64px;
@@ -42,6 +42,15 @@ a:hover {
     padding-right:5px;
     padding-left:5px;
     margin:0px;
+    -webkit-transition-property: text-shadow;
+    -webkit-transition-duration: 0.2s, 0.2s;
+    -webkit-transition-timing-function: linear, ease-in;
+    -o-transition-property: text-shadow;
+    -o-transition-duration: 0.2s, 0.2s;
+    -o-transition-timing-function: linear, ease-in;
+  }
+  a:hover {
+    text-shadow: 0px 0px 5px #aa8000;
   }
   margin-top:25px;
 }
@@ -102,12 +111,10 @@ a:hover {
 .field {
   width:600px;
 }
-label {
-  width:160px;
-  float:left;
-  padding-right:5px;
-  padding-top:5px;
-  text-align:right;
+.fieldlabel {
+  margin-left:180px;
+  font-style:italic;
+  padding:3px;
 }
 table {
   width:98%;
@@ -117,14 +124,41 @@ table {
     text-align:left;
   }
 }
-input {
-  padding:2px;
-  border:1px solid #DFDFDF;
-  background:#EFEFEF;
+form h2 {
+  margin-left:167px;
+}
+input:focus {
+  border:1px solid;
+  border-color:#a08800;
+  background:#f9f1b1;
+}
+input,select {
+  font-size:17px;
+  padding:3px;
+  border:1px solid;
+  border-color:#CCCCCC;
+  background:#EEEEEE;
+  -webkit-transition-property: background, border-color;
+  -webkit-transition-duration: 0.1s, 0.1s;
+  -webkit-transition-timing-function: linear, ease-in;
+  -o-transition-property: background, border-color;
+  -o-transition-duration: 0.1s, 0.1s;
+  -o-transition-timing-function: linear, ease-in;
+}
+input[type="checkbox"] {
+  margin-top:8px;
+  margin-left:5px;
 }
 input[type="submit"] {
   padding:5px;
   margin-left:167px;
+}
+label {
+  width:162px;
+  float:left;
+  padding-right:5px;
+  padding-top:5px;
+  text-align:right;
 }
 pre {
   width:98%;

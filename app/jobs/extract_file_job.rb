@@ -1,4 +1,3 @@
-require 'open3'
 # ExtractFileJob pulls data out of anything possible and stuffs it into a WAV for subsequent operations.
 class NoOutputError < Exception; end
 class ExtractFileJob < Struct.new(:upload_id)
@@ -12,7 +11,6 @@ class ExtractFileJob < Struct.new(:upload_id)
     begin
       ffmpeg_out = ''
       IO.popen(['ffmpeg', '-i', in_path, out_path]){|io|ffmpeg_out = io.read}
-      #stdin, stdout, stderr = Open3.popen3(['ffmpeg', '-i', in_path, out_path])
       raise(NoOutputError, "ffmpeg didn't write anything") unless File.exists?(out_path)
       u.atl("INFO", "ExtractFileJob: ffmpeg conversion finished")
       u.unpacked_okay
@@ -22,4 +20,5 @@ class ExtractFileJob < Struct.new(:upload_id)
     end
     u.atl("INFO", "ExtractFileJob: Finished")
   end
+  def failure;u = Upload.find(self.upload_id);u.mark_failed; end
 end

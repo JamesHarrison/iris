@@ -75,8 +75,6 @@ class MetadataJob < Struct.new(:upload_id)
           end
         end
         raise(ExternalMetadataError, "Could not find artist #{u.artist} in MusicBrainz") if !a_id
-        # Get the artist, then get the track using the artist MBID and MB search, pick the most likely one
-        a = brainz.artist(a_id)
         u.atl("INFO", "MetadataJob: Got artist #{a_id}")
         u.musicbrainz_artist_id = a_id
         t_id = nil
@@ -130,4 +128,5 @@ class MetadataJob < Struct.new(:upload_id)
     u.atl("INFO", "MetadataJob: Finished")
     u.got_metadata!
   end
+  def failure;u = Upload.find(self.upload_id);u.mark_failed; end
 end

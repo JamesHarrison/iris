@@ -74,4 +74,5 @@ class FilterJob < Struct.new(:upload_id)
       u.pass_filtering
     end
   end
+  def failure;u = Upload.find(self.upload_id);u.mark_failed; end
 end
