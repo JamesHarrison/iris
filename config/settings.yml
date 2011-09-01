@@ -30,7 +30,6 @@ bad_words:
   - cunt
   - fuck
   - bitch
-  - cock
   - bastard
 # If you have a _FULL LYRICS_ API key for MusixMatch, enter it here
 musixmatch_api_key: nil

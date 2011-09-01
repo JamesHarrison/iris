@@ -70,14 +70,22 @@ class ImportJob < Struct.new(:upload_id)
           u.atl("INFO", "ImportJob: FLAC format selected, encoding")
           out_path = out_path+".flac"
           flac_out = ''
-          IO.popen(['flac', '--best', '--tag=TITLE='+u.title, '--tag=ARTIST='+u.artist, '--tag=ALBUM='+u.album, in_path, '-o', out_path]){|io|flac_out = io.read}
+          opts = ['flac', '--best', '--tag=TITLE='+u.title, '--tag=ARTIST='+u.artist]
+          opts = '--tag=ALBUM='+u.album if u.album
+          opts = opts + [in_path, '-o', out_path]
+          IO.popen(opts){|io|flac_out = io.read}
           raise(ExportError, "FLAC encoder didn't write anything") unless File.exists?(out_path)
           u.imported_okay
         elsif Settings.file_import_format == 'aac'
           u.atl("INFO", "ImportJob: AAC format selected, encoding")
           out_path = out_path+".m4a"
           faac_out = ''
-          IO.popen(['faac', '-q', '150', '--title='+u.title, '--artist='+u.artist, '--album='+u.album, '--writer='+u.composer, '--year='+u.year.to_s, in_path, '-o', out_path]){|io|faac_out = io.read}
+          opts = ['faac', '-q', '150', '--title='+u.title, '--artist='+u.artist]
+          opts.push '--album='+u.album if u.album
+          opts.push '--writer='+u.composer if u.composer
+          opts.push '--year='+u.year.to_s if u.year
+          opts = opts + [in_path, '-o', out_path]
+          IO.popen(opts){|io|faac_out = io.read}
           raise(ExportError, "AAC encoder didn't write anything") unless File.exists?(out_path)
           u.imported_okay
         else
@@ -113,7 +121,12 @@ class ImportJob < Struct.new(:upload_id)
     raise(ExportError, "MP3 encoding to #{out_path} was not performed successfully") unless File.exists?(out_path)
     u.atl("INFO", "ImportJob: MP3 written to #{out_path}")
     taglog = ''
-    IO.popen(['id3tag', '--song='+u.title, '--artist='+u.artist, '--album='+u.album, '--comment='+u.composer, '--year='+u.year.to_s, "--comment=IRIS Upload #{u.id}", out_path]){|io|taglog = io.read}
+    opts = ['id3tag', '--song='+u.title, '--artist='+u.artist, "--comment=IRIS Upload #{u.id}"]
+    opts.push '--album='+u.album if u.album
+    opts.push '--comment='+u.composer if u.composer
+    opts.push '--year='+u.year.to_s if u.year
+    opts.push out_path
+    IO.popen(opts){|io|taglog = io.read}
     u.atl("INFO", "ImportJob: ID3 tags written")
   end
   def failure;u = Upload.find(self.upload_id);u.mark_failed; end

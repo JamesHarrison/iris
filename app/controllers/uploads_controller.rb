@@ -91,6 +91,6 @@ class UploadsController < ApplicationController
   end
   def flagged
     authorize! :manage, Upload
-    @uploads = Upload.accessible_by(current_ability).where(:state=>['needs_review', 'rejected', 'approved']).paginate(:page=>params[:page])
+    @uploads = Upload.accessible_by(current_ability).order('id DESC').where(:state=>['needs_review', 'rejected', 'approved']).paginate(:page=>params[:page])
   end
 end
