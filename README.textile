@@ -1,6 +1,6 @@
 h1. Welcome to IRIS
 
-IRIS is the Interchangeable Radio Ingest System.
+IRIS is the Interchangeable Radio Ingest System. It won a Gold award for Best Technical Achievement from the Student Radio Awards. And your station can use it too.
 
 It has one purpose, and one purpose only: Act as a firewall between presenters and staff, trying to upload their music, and what should be a very well maintained and looked-after music library in a radio playout system. Of course, this playout system could be anything- the current targets for automatic import to playout systems are the "Rivendell":http://rivendellaudio.org broadcast automation system, as well as a generic tagged file output (Broadcast WAVE Format/Linear PCM, untagged Linear PCM or high-as-possible MPEG Layer 3 with IDv2/1 tags, tagged FLAC or tagged AAC) which can be ingested to a playout system manually or via auto-import tools built into the playout system.
 
