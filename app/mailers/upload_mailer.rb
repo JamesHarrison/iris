@@ -31,7 +31,7 @@ class UploadMailer < ActionMailer::Base
     else
       @upload_name = upload.filename
     end
-    @upload_name = "##{upload.id}: "+@upload_name
+    @upload_name = "##{upload.id}: "+@upload_name rescue "unknown upload (#{upload.id})"
     if to.length > 0
       upload.atl("INFO","Emailing filter notification to: #{to.join(", ")}")
       mail(:to=>to, :subject=>"#{Settings.email_prefix}#{@upload_name} failed to import")
