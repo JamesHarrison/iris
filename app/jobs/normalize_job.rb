@@ -97,10 +97,10 @@ class NormalizeJob < Struct.new(:upload_id)
       end
     end
     if gain != 0.0
-      u.atl("INFO", "NormalizeJob: Adjusting gain by #{gain.inspect}")
+      final_in_path = File.exists?(eca_path) ? eca_path : in_path
+      u.atl("INFO", "NormalizeJob: Adjusting gain by #{gain.inspect} on #{final_in_path}")
       begin
         ecaout = ''
-        final_in_path = File.exists?(eca_path) ? eca_path : in_path
         if gain > 0.0
           # First let's analyse the file
           max_gain_increase = 0
@@ -112,8 +112,10 @@ class NormalizeJob < Struct.new(:upload_id)
             u.atl("WARN", "Unable to determine max gain increase from ecasound - #{e.inspect} - #{ecaout}")
           end
           if gain > max_gain_increase
-            u.atl("WARN", "Reducing gain change to avoid clipping")
             gain = max_gain_increase
+            u.atl("WARN", "Reducing gain change to avoid clipping - new increase #{gain}")
+          else
+            u.atl("INFO", "Okay to change gain without fear of clipping")
           end
           IO.popen(['ecasound', '-i', final_in_path, '-o', out_path, "-eadb:#{gain.to_s}"]){|io|ecaout = io.read}
         else
