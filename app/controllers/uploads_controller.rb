@@ -56,6 +56,10 @@ class UploadsController < ApplicationController
     @upload = Upload.new
     @upload.user_id = current_user.id
     authorize! :upload, @upload
+    if params["filename.name"].blank?
+      flash[:error] = "No file selected."
+      redirect_to new_upload_path
+    end
     @upload.filename = params["filename.name"]
     @upload.path = params["filename.path"]
     @upload.format = params["filename.content_type"]
