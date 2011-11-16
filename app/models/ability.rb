@@ -6,15 +6,16 @@ class Ability
     #
     user ||= User.new # guest user (not logged in)
     if user.role == 'board'
-      can :manage, Upload
-      can :manage, User
+      can :manage, :all
     elsif user.role == 'music_team'
       can :manage, Upload
-      can :manage, User, :id=>user.id
+      can :read, User, :id=>user.id
+      can :update, User, :id=>user.id
     elsif user.role == 'user'
       can :read, Upload, :user_id => user.id
       can :upload, Upload
-      can :manage, User, :id=>user.id
+      can :read, User, :id=>user.id
+      can :update, User, :id=>user.id
     end
     #
     # The first argument to `can` is the action you are giving the user permission to do.
