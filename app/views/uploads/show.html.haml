@@ -90,10 +90,16 @@
   = @upload.isrc or "No International Standard Recording Code available"
 %p
   %strong MusicBrainz Artist ID:
-  = @upload.musicbrainz_artist_id or "Artist was not found on MusicBrainz (or metadata job has not run yet)"
+  - if @upload.musicbrainz_artist_id 
+    = link_to @upload.musicbrainz_artist_id, "http://musicbrainz.org/artist/#{@upload.musicbrainz_artist_id}"
+  - else
+    Artist was not found on MusicBrainz (or metadata job has not run yet)
 %p
   %strong MusicBrainz Track ID:
-  = @upload.musicbrainz_track_id or "Track was not found on MusicBrainz (or metadata job has not run yet)"
+  - if @upload.musicbrainz_track_id 
+    = link_to @upload.musicbrainz_track_id, "http://musicbrainz.org/recording/#{@upload.musicbrainz_track_id}"
+  - else
+    Track was not found on MusicBrainz (or metadata job has not run yet)
 
 %h2 Loudness Waveforms
 - if @h
