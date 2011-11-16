@@ -45,7 +45,7 @@ class FilterJob < Struct.new(:upload_id)
         json = open("http://api.musixmatch.com/ws/1.1/track.lyrics.get?track_mbid=#{u.musicbrainz_track_id}&format=json&apikey=#{Settings.musixmatch_api_key}").read()
         data = parser.parse(json)
         code = data['message']['header']['status_code'].to_i
-        if code == 200
+        if code == 200 and data['message']['body']['lyrics']['lyrics_body']
           lyrics = data['message']['body']['lyrics']['lyrics_body']
           u.lyrics = lyrics
           u.save!

@@ -89,27 +89,38 @@ class NormalizeJob < Struct.new(:upload_id)
       end
     end
 
-    soxout = ''
     # We need to turn this down a little more- we're in danger of clipping on DACs and whatnot.
     if md[:true_peak_dbtp] > -1.0
       gain_mtp = -1.0-md[:true_peak_dbtp] # This is by how much we need to adjust the volume in dB, so now let's work out how much we need to tweak our gain param to allow that
       if gain > gain_mtp # If we're adjusting by less (negative numbers, remember!), we need to add to that reduction
-        gain = gain - (gain - gain_mtp) # TODO: Check this, maths-wise
+        gain = gain - (gain - gain_mtp)
       end
     end
     if gain != 0.0
       u.atl("INFO", "NormalizeJob: Adjusting gain by #{gain.inspect}")
       begin
-        # Explanation on sox options: gain followed by a number changes the amplitude. The -l option should be applied when adding gain- this adds a limiter to prevent clipping. -D disables automatic dithering.
-        soxout = ''
-        if gain > 0
-          IO.popen(['sox', (File.exists?(eca_path) ? eca_path : in_path), out_path, 'gain', '-l', gain.to_s]){|io|soxout = io.read}
+        ecaout = ''
+        final_in_path = File.exists?(eca_path) ? eca_path : in_path
+        if gain > 0.0
+          # First let's analyse the file
+          max_gain_increase = 0
+          begin
+            IO.popen(['ecasound', '-i', final_in_path, '-o', out_path, "-ev"]){|io|ecaout = io.read}
+            max_gain_increase = ecaout.match(/.+Max gain without clipping: (\d+\.\d+)/)[1].to_f
+            u.atl("INFO", "Got maximum gain increase before clipping of #{max_gain_increase.to_s rescue 'unknown'}")
+          rescue Exception => e
+            u.atl("WARN", "Unable to determine max gain increase from ecasound - #{e.inspect} - #{ecaout}")
+          end
+          if gain > max_gain_increase
+            u.atl("WARN", "Reducing gain change to avoid clipping")
+            gain = max_gain_increase
+          end
+          IO.popen(['ecasound', '-i', final_in_path, '-o', out_path, "-eadb:#{gain.to_s}"]){|io|ecaout = io.read}
         else
-          IO.popen(['sox', (File.exists?(eca_path) ? eca_path : in_path), out_path, 'gain', gain.to_s]){|io|soxout = io.read}
+          IO.popen(['ecasound', '-i', final_in_path, '-o', out_path, "-eadb:#{gain.to_s}"]){|io|ecaout = io.read}
         end
-        raise(SoxError, "sox didn't write any data: #{soxout}") unless File.exists?(out_path)
+        raise(EcasoundError, "ecasound didn't write any data: #{ecaout.to_s}") unless File.exists?(out_path)
         u.atl("INFO", "NormalizeJob: Adjusted gain by #{gain.inspect}")
-        u.atl("WARN", "NormalizeJob: sox reported clipping: #{soxout.inspect}")if soxout.include?("clipped")
         gwf = UploadWaveform.new
         gwf.label = 'Post-normalization'
         gwf.upload_id = u.id
