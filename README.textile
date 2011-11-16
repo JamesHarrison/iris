@@ -35,7 +35,7 @@ IRIS requires:
 * The bundler gem (sudo gem install bundler)
 * sox, ecasound, ffmpeg, flac and exiftool (all available in Ubuntu's repos, other distros may vary)
 * The SC4 LADSPA compressor (available in swh-plugins in Ubuntu- may be omitted if you're not using LRA adjustment)
-* r128-scanner from libebur128 (https://github.com/jiixyj/libebur128)
+* loudness from libebur128 (https://github.com/jiixyj/libebur128)
 * nginx with the nginx upload module (http://www.grid.net.ru/nginx/upload.en.html)
 * A database server (PostgreSQL highly recommended)
 * libxml-dev, libxslt-dev, graphviz-dev, ffmpeg-dev libraries

@@ -1,6 +1,6 @@
 # COSMETIC SETTINGS
 site_title: "Interchangeable Radio Ingest System"
-footer_text: "My Little Radio Station"
+footer_text: "My First Radio Station"
 # INTERNAL PATHS
 # Path to import from the filesystem with when running rake iris:import. If you're not using filesystem ingest, ignore.
 import_path: /tmp/some-file-path/
