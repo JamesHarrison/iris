@@ -1,3 +1,10 @@
+h1. IRIS is defunct - please don't use it
+
+If you've landed here, sorry to disappoint, but this repository hasn't been updated in close to a decade and is full of holes, was never particularly well-written code in the first place, and should not be considered for new systems.
+
+The good news is that "there is a successor":https://github.com/InsanityRadio/Nerve/ which is better (and _also_ won a Student Radio Award!) so you can use that instead.
+
+
 h1. Welcome to IRIS
 
 IRIS is the Interchangeable Radio Ingest System. It won a Gold award for Best Technical Achievement from the Student Radio Awards. And your station can use it too.
